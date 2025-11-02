@@ -18,10 +18,7 @@ export class TechnicalSupportService {
     return data
   }
 
-  findOne(id: string) {
 
-
-  }
 
   async update(id: string, updateTechnicalSupportDto: UpdateTechnicalSupportDto) {
     const data = await this.userModel.findById(id);

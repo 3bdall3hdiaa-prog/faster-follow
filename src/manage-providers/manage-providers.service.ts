@@ -21,9 +21,7 @@ export class ManageProvidersService {
     return data
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} manageProvider`;
-  }
+
 
   async update(id: string, updateManageProviderDto: UpdateManageProviderDto) {
     const data = await this.userModel.findOneAndUpdate({ _id: id }, { ...updateManageProviderDto }, { new: true });

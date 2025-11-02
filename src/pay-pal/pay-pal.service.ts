@@ -51,7 +51,7 @@ export class PaypalService {
           intent: 'CAPTURE',
           application_context: {
             return_url: `http://localhost:3001/paypal/capture-order?user=${encodeURIComponent(userName)}`,
-            cancel_url: 'http://localhost:3000',
+            cancel_url: process.env.API_FRONT,
           },
           purchase_units: [
             {

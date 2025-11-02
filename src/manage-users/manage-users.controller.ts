@@ -20,10 +20,7 @@ export class ManageUsersController {
   }
 
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.manageUsersService.findOne(id);
-  // }
+
 
   @Put(':id')
   update(@Param('id') id: string, @Body(new ValidationPipe) updateManageUserDto: UpdateManageUserDto) {

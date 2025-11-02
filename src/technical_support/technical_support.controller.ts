@@ -17,10 +17,7 @@ export class TechnicalSupportController {
     return this.technicalSupportService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.technicalSupportService.findOne(id);
-  }
+
 
   @Put(':id')
   update(@Param('id') id: string, @Body() updateTechnicalSupportDto: UpdateTechnicalSupportDto) {

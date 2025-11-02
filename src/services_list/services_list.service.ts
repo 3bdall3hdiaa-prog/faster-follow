@@ -16,9 +16,7 @@ export class ServicesListService {
     return data
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} servicesList`;
-  }
+
 
   async update(id: string, updateServicesListDto: UpdateServicesListDto) {
     const data = await this.servicesListModel.findOneAndUpdate({ _id: id }, { ...updateServicesListDto }, { new: true });

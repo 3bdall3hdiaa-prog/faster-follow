@@ -16,7 +16,7 @@ export class Payment extends Document {
     status: string;
     @Prop()
     userName: string;
-    @Prop({ unique: true })
+    @Prop()
     code: string
 
 }

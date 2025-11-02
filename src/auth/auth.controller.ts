@@ -20,7 +20,7 @@ export class AuthController {
       const user = req.user;
 
       if (!user) {
-        return res.redirect('http://localhost:3000/#/login?error=auth_failed');
+        return res.redirect(`${process.env.API_FRONT}/#/login?error=auth_failed`);
       }
 
       // حفظ المستخدم في الداتابيز
@@ -30,12 +30,12 @@ export class AuthController {
       const tokenResult = await this.authService.generateToken(dbUser);
 
       // التوجيه للفرونت إند
-      const frontendUrl = `http://localhost:3000/#/callback?token=${tokenResult.token}&user=${encodeURIComponent(JSON.stringify(tokenResult.user))}`;
+      const frontendUrl = `${process.env.API_FRONT}/#/callback?token=${tokenResult.token}&user=${encodeURIComponent(JSON.stringify(tokenResult.user))}`;
       return res.redirect(frontendUrl);
 
     } catch (error) {
       console.error('Callback error:', error);
-      return res.redirect('http://localhost:3000/#/login?error=auth_error');
+      return res.redirect(`${process.env.API_FRONT}/#/login?error=auth_error`);
     }
   }
 }

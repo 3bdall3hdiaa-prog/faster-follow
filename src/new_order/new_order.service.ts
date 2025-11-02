@@ -6,7 +6,7 @@ import { UserDocument } from './new_order.schema';
 import { Model } from 'mongoose';
 import axios from 'axios';
 import { ManageProvidersDocument } from 'src/manage-providers/schema';
-import { NotificationDocument } from 'src/notification/motification.schema';
+// import { NotificationDocument } from 'src/notification/motification.schema';
 @Injectable()
 export class NewOrderService {
   constructor(@InjectModel('NewOrder') private readonly newOrderModel: Model<UserDocument>,

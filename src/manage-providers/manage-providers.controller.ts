@@ -17,10 +17,8 @@ export class ManageProvidersController {
     return this.manageProvidersService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.manageProvidersService.findOne(+id);
-  }
+
+
 
   @Put(':id')
   update(@Param('id') id: string, @Body() updateManageProviderDto: UpdateManageProviderDto) {
