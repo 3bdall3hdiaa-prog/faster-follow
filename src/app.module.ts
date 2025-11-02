@@ -18,9 +18,8 @@ import { ManagepagesModule } from './managepages/managepages.module';
 import { ManagepannersModule } from './managepanners/managepanners.module';
 import { ManagecoponsModule } from './managecopons/managecopons.module';
 import { NotificationModule } from './notification/notification.module';
-
 @Module({
-  imports: [ConfigModule.forRoot(), MongooseModule.forRoot('mongodb://localhost:27017/fasterfollow'), PayPalModule, AuthModule, NewOrderModule, AUTHAUTHOModule, UserModule, ServicesListModule, ManageUsersModule, ManageProvidersModule, BalanceUsersModule, TechnicalSupportModule, BlogModule, ManagepagesModule, ManagepannersModule, ManagecoponsModule, NotificationModule],
+  imports: [ConfigModule.forRoot(), MongooseModule.forRoot(process.env.MONGO || ''), PayPalModule, AuthModule, NewOrderModule, AUTHAUTHOModule, UserModule, ServicesListModule, ManageUsersModule, ManageProvidersModule, BalanceUsersModule, TechnicalSupportModule, BlogModule, ManagepagesModule, ManagepannersModule, ManagecoponsModule, NotificationModule],
   controllers: [AppController],
   providers: [AppService],
 })
