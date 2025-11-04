@@ -18,11 +18,22 @@ import { ManagepagesModule } from './managepages/managepages.module';
 import { ManagepannersModule } from './managepanners/managepanners.module';
 import { ManagecoponsModule } from './managecopons/managecopons.module';
 import { NotificationModule } from './notification/notification.module';
+import { ResetpasswordModule } from './resetpassword/resetpassword.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { MangePaymentsModule } from './mange-payments/mange-payments.module';
 @Module({
-  imports: [ConfigModule.forRoot(),ConfigModule.forRoot({
-  isGlobal: true,
-})
- ,MongooseModule.forRoot(process.env.MONGO || ''), PayPalModule, AuthModule, NewOrderModule, AUTHAUTHOModule, UserModule, ServicesListModule, ManageUsersModule, ManageProvidersModule, BalanceUsersModule, TechnicalSupportModule, BlogModule, ManagepagesModule, ManagepannersModule, ManagecoponsModule, NotificationModule],
+  imports: [ConfigModule.forRoot(), ConfigModule.forRoot({
+    isGlobal: true,
+  })
+    , MailerModule.forRoot({
+      transport: {
+        service: 'gmail',
+        auth: {
+          user: process.env.EMAIL_USERNAME,
+          pass: process.env.EMAIL_PASSWORD,
+        },
+      },
+    }), MongooseModule.forRoot(process.env.MONGO || ''), PayPalModule, AuthModule, NewOrderModule, AUTHAUTHOModule, UserModule, ServicesListModule, ManageUsersModule, ManageProvidersModule, BalanceUsersModule, TechnicalSupportModule, BlogModule, ManagepagesModule, ManagepannersModule, ManagecoponsModule, NotificationModule, ResetpasswordModule, MangePaymentsModule],
   controllers: [AppController],
   providers: [AppService],
 })
