@@ -51,6 +51,8 @@ export class ServicesList {
     status: boolean;
     @Prop()
     imageUrl: string
+    @Prop()
+    descriptionAr: string
 }
 
 export const ServicesListSchema = SchemaFactory.createForClass(ServicesList);

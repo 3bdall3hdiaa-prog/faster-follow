@@ -59,19 +59,5 @@ export class ResetpasswordService {
   }
 
 
-  findAll() {
-    return `This action returns all resetpassword`;
-  }
 
-  findOne(id: number) {
-    return `This action returns a #${id} resetpassword`;
-  }
-
-  update(id: number, updateResetpasswordDto: UpdateResetpasswordDto) {
-    return `This action updates a #${id} resetpassword`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} resetpassword`;
-  }
 }

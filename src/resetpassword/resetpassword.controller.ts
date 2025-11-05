@@ -25,15 +25,6 @@ export class ResetpasswordController {
   }
 
 
-  @Get()
-  findAll() {
-    return this.resetpasswordService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.resetpasswordService.findOne(+id);
-  }
 
 
 }

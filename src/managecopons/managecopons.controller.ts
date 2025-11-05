@@ -11,6 +11,10 @@ export class ManagecoponsController {
   create(@Body() createManagecoponDto: CreateManagecoponDto) {
     return this.managecoponsService.create(createManagecoponDto);
   }
+  @Post('editbalance')
+  createe(@Body() createManagecoponDto: any) {
+    return this.managecoponsService.createe(createManagecoponDto);
+  }
   @Get()
   findAll() {
     return this.managecoponsService.findAll();

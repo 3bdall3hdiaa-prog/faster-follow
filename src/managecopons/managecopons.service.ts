@@ -7,11 +7,13 @@ import { Model } from 'mongoose';
 import { Payment } from '../pay-pal/pay-pal.shema';
 import { HttpException } from '@nestjs/common';
 import { NotificationDocument } from 'src/notification/motification.schema';
+import { UserDocument } from 'src/auth_autho/auth.schema';
 @Injectable()
 export class ManagecoponsService {
   constructor(@InjectModel('Payment') private readonly userModel: Model<Payment>,
     @InjectModel("Managecopon") private copon: Model<CoponsDocument>,
-    @InjectModel('Notification') private readonly Notification: Model<NotificationDocument>,) { }
+    @InjectModel('Notification') private readonly Notification: Model<NotificationDocument>,
+    @InjectModel('auth_authos') private data: Model<UserDocument>) { }
   async create(createManagecoponDto: CreateManagecoponDto) {
     const createdManagecopon = new this.copon(createManagecoponDto);
     return await createdManagecopon.save();
@@ -66,5 +68,12 @@ export class ManagecoponsService {
 
   async remove(id: string) {
     await this.copon.findByIdAndDelete(id);
+  }
+  async createe(createManagecoponDto: any) {
+    const { userName } = createManagecoponDto
+    const chek = await this.data.findOne({ username: userName })
+    if (!chek) throw new HttpException("المستخدم غير موجود", 404);
+    const createdManagecopon = await this.userModel.create(createManagecoponDto);
+    return createdManagecopon
   }
 }
