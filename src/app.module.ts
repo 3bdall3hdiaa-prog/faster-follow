@@ -21,6 +21,7 @@ import { NotificationModule } from './notification/notification.module';
 import { ResetpasswordModule } from './resetpassword/resetpassword.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { MangePaymentsModule } from './mange-payments/mange-payments.module';
+import { ManageSettingModule } from './manage-setting/manage-setting.module';
 @Module({
   imports: [ConfigModule.forRoot(), ConfigModule.forRoot({
     isGlobal: true,
@@ -33,7 +34,7 @@ import { MangePaymentsModule } from './mange-payments/mange-payments.module';
           pass: process.env.EMAIL_PASSWORD,
         },
       },
-    }), MongooseModule.forRoot(process.env.MONGO || ''), PayPalModule, AuthModule, NewOrderModule, AUTHAUTHOModule, UserModule, ServicesListModule, ManageUsersModule, ManageProvidersModule, BalanceUsersModule, TechnicalSupportModule, BlogModule, ManagepagesModule, ManagepannersModule, ManagecoponsModule, NotificationModule, ResetpasswordModule, MangePaymentsModule],
+    }), MongooseModule.forRoot(process.env.MONGO || ''), PayPalModule, AuthModule, NewOrderModule, AUTHAUTHOModule, UserModule, ServicesListModule, ManageUsersModule, ManageProvidersModule, BalanceUsersModule, TechnicalSupportModule, BlogModule, ManagepagesModule, ManagepannersModule, ManagecoponsModule, NotificationModule, ResetpasswordModule, MangePaymentsModule, ManageSettingModule],
   controllers: [AppController],
   providers: [AppService],
 })

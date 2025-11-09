@@ -20,6 +20,8 @@ export class User {
     // balance: number
     @Prop({ default: 'active' })
     status: string
+    @Prop({ default: false })
+    is2FA: boolean
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

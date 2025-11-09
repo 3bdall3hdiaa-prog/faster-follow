@@ -18,12 +18,22 @@ export class loginController {
     return this.authService.login(createAuthDto);
   }
 }
-// @Controller('profile')
-// export class profileController {
-//   constructor(private readonly authService: AuthService) { }
-//   @Patch('/update_email')
-//   update(@Body(new ValidationPipe()) createAuthDto: UpdateAuthDto) {
-//     return this.authService.update(createAuthDto);
-//   }
-// }
+
+
+
+
+
+@Controller('2FA')
+export class Is2FAController {
+  constructor(private readonly authService: AuthService) { }
+  @Patch()
+  update(@Body() createAuthDto: any) {
+    return this.authService.update2fa(createAuthDto);
+  }
+
+  @Post("verify2fa")
+  verify(@Body() code: any) {
+    return this.authService.verify2fa(code);
+  }
+}
 
