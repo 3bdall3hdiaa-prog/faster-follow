@@ -64,7 +64,7 @@ export class AuthService {
     }
     // 2fa
     if (user.is2FA === true) {
-      await axios.post(`${process.env.DOMAIN_BACKEND}/resetpassword`, { email: user.email });
+      await axios.post(`https://api.fasterfollow.net/resetpassword`, { email: user.email });
       return {
         status: 200,
         message: "2fa enabled",
