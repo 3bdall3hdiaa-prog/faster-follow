@@ -25,10 +25,10 @@ import { ManageSettingModule } from './manage-setting/manage-setting.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
-  imports: [ConfigModule.forRoot(), ConfigModule.forRoot({
+  imports: [ScheduleModule.forRoot(), ConfigModule.forRoot(), ConfigModule.forRoot({
     isGlobal: true,
   })
-    , ScheduleModule.forRoot(), MailerModule.forRoot({
+    , MailerModule.forRoot({
       transport: {
         service: 'gmail',
         auth: {

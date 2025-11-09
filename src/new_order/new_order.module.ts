@@ -5,14 +5,14 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema } from './new_order.schema';
 import { ConfigModule } from '@nestjs/config';
 import { ManageProvidersSchema } from 'src/manage-providers/schema';
-import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
-  imports: [ConfigModule.forRoot(), ScheduleModule.forRoot(),
+  imports: [ConfigModule.forRoot(),
   MongooseModule.forFeature([{ name: 'NewOrder', schema: UserSchema }]),
   MongooseModule.forFeature([{ name: 'ManageProviders', schema: ManageProvidersSchema }]),
   ],
   controllers: [NewOrderController],
   providers: [NewOrderService],
+  exports: [NewOrderService],
 })
 export class NewOrderModule { }

@@ -136,19 +136,31 @@ export class NewOrderService {
     await this.newOrderModel.findOneAndDelete({ _id: id });
   }
 
+  onModuleInit() {
+    console.log('🚀 NewOrderService initialized, Cron should start soon...');
+  }
 
-  @Cron(CronExpression.EVERY_30_SECONDS) // كل 30 ثانية، تقدر تغيرها
+  // الكرون بتشتغل كل 30 ثانية
+  @Cron(CronExpression.EVERY_30_SECONDS)
   async autoUpdateOrders() {
     try {
+      console.log('🔥 Cron running... checking for pending/processing orders');
+
       const pendingOrders = await this.newOrderModel.find({
-        status: { $in: ['pending', 'processing'] },
+        status: { $in: ['pending', 'processing', 'in progress'] },
       });
 
-      if (pendingOrders.length === 0) return;
+      if (pendingOrders.length === 0) {
+        console.log('ℹ️ No pending orders found');
+        return;
+      }
 
       for (const order of pendingOrders) {
         const provider = await this.providerModel.findOne({ name: order.provider });
-        if (!provider) continue;
+        if (!provider) {
+          console.warn(`⚠️ Provider not found for order ${order._id}`);
+          continue;
+        }
 
         const payload = new URLSearchParams();
         payload.append('key', provider.apiKey);
@@ -160,14 +172,16 @@ export class NewOrderService {
         if (response.data.status) {
           const newStatus = response.data.status.toLowerCase();
           await this.newOrderModel.findByIdAndUpdate(order._id, { status: newStatus });
+          console.log(`✅ Order ${order._id} updated to ${newStatus}`);
         }
       }
 
-      console.log('✅ تم تحديث حالات الطلبات تلقائيًا');
+      console.log('✅ Auto update completed successfully');
     } catch (err) {
-      console.error('❌ خطأ أثناء تحديث الطلبات:', err.message);
+      console.error('❌ Error during auto update:', err.message);
     }
   }
+
 }
 
 
