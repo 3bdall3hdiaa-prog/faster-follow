@@ -6,6 +6,8 @@ import { UserDocument } from './new_order.schema';
 import { Model } from 'mongoose';
 import axios from 'axios';
 import { ManageProvidersDocument } from 'src/manage-providers/schema';
+import { Cron, CronExpression } from '@nestjs/schedule';
+
 // import { NotificationDocument } from 'src/notification/motification.schema';
 @Injectable()
 export class NewOrderService {
@@ -133,4 +135,39 @@ export class NewOrderService {
     if (!user) throw new HttpException("user not found", 404);
     await this.newOrderModel.findOneAndDelete({ _id: id });
   }
+
+
+  @Cron(CronExpression.EVERY_30_SECONDS) // كل 30 ثانية، تقدر تغيرها
+  async autoUpdateOrders() {
+    try {
+      const pendingOrders = await this.newOrderModel.find({
+        status: { $in: ['pending', 'processing'] },
+      });
+
+      if (pendingOrders.length === 0) return;
+
+      for (const order of pendingOrders) {
+        const provider = await this.providerModel.findOne({ name: order.provider });
+        if (!provider) continue;
+
+        const payload = new URLSearchParams();
+        payload.append('key', provider.apiKey);
+        payload.append('action', 'status');
+        payload.append('order', order.providerOrderId.toString());
+
+        const response = await axios.post(provider.apiEndpoint, payload);
+
+        if (response.data.status) {
+          const newStatus = response.data.status.toLowerCase();
+          await this.newOrderModel.findByIdAndUpdate(order._id, { status: newStatus });
+        }
+      }
+
+      console.log('✅ تم تحديث حالات الطلبات تلقائيًا');
+    } catch (err) {
+      console.error('❌ خطأ أثناء تحديث الطلبات:', err.message);
+    }
+  }
 }
+
+

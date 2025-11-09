@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema } from './new_order.schema';
 import { ConfigModule } from '@nestjs/config';
 import { ManageProvidersSchema } from 'src/manage-providers/schema';
+
 @Module({
   imports: [ConfigModule.forRoot(),
   MongooseModule.forFeature([{ name: 'NewOrder', schema: UserSchema }]),

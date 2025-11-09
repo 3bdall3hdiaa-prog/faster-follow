@@ -22,11 +22,13 @@ import { ResetpasswordModule } from './resetpassword/resetpassword.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { MangePaymentsModule } from './mange-payments/mange-payments.module';
 import { ManageSettingModule } from './manage-setting/manage-setting.module';
+import { ScheduleModule } from '@nestjs/schedule';
+
 @Module({
   imports: [ConfigModule.forRoot(), ConfigModule.forRoot({
     isGlobal: true,
   })
-    , MailerModule.forRoot({
+    , ScheduleModule.forRoot(), MailerModule.forRoot({
       transport: {
         service: 'gmail',
         auth: {
