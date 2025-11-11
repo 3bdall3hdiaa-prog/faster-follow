@@ -23,6 +23,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { MangePaymentsModule } from './mange-payments/mange-payments.module';
 import { ManageSettingModule } from './manage-setting/manage-setting.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ManageplatformsModule } from './manageplatforms/manageplatforms.module';
 
 @Module({
   imports: [ScheduleModule.forRoot(), ConfigModule.forRoot(), ConfigModule.forRoot({
@@ -36,8 +37,9 @@ import { ScheduleModule } from '@nestjs/schedule';
           pass: process.env.EMAIL_PASSWORD,
         },
       },
-    }), MongooseModule.forRoot(process.env.MONGO || ''), PayPalModule, AuthModule, NewOrderModule, AUTHAUTHOModule, UserModule, ServicesListModule, ManageUsersModule, ManageProvidersModule, BalanceUsersModule, TechnicalSupportModule, BlogModule, ManagepagesModule, ManagepannersModule, ManagecoponsModule, NotificationModule, ResetpasswordModule, MangePaymentsModule, ManageSettingModule],
+    }), MongooseModule.forRoot(process.env.MONGO || ''), PayPalModule, AuthModule, NewOrderModule, AUTHAUTHOModule, UserModule, ServicesListModule, ManageUsersModule, ManageProvidersModule, BalanceUsersModule, TechnicalSupportModule, BlogModule, ManagepagesModule, ManagepannersModule, ManagecoponsModule, NotificationModule, ResetpasswordModule, MangePaymentsModule, ManageSettingModule, ManageplatformsModule],
   controllers: [AppController],
   providers: [AppService],
+  
 })
 export class AppModule { }

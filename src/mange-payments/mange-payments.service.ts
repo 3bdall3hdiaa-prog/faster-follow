@@ -14,7 +14,7 @@ export class MangePaymentsService {
   }
 
   async findAll() {
-    const data = await this.userModel.find().select('-_id -__v');
+    const data = await this.userModel.find().select('-__v');
     return data
   }
 
@@ -28,6 +28,6 @@ export class MangePaymentsService {
   }
 
   async remove(id: string) {
-    await this.userModel.findOneAndDelete({ _id: id });
+    await this.userModel.findOneAndDelete({ _id: id || id });
   }
 }
