@@ -7,25 +7,29 @@ import { HttpException, UnauthorizedException } from "@nestjs/common/exceptions"
 export class RoleGuard implements CanActivate {
     constructor(private readonly reflector: Reflector, private readonly jwtService: JwtService) { }
     async canActivate(context: ExecutionContext): Promise<boolean> { //يبقي الفنكشن هترجع بروميس async/await  طلما مستخدم 
+        console.log("hello");
         const roles = this.reflector.get(role, context.getHandler());
+
         if (!roles) {
             return true;
         }
         const request = context.switchToHttp().getRequest();
         // const token = request.headers.authorization
-        const token = request.headers.authorization.split(' ')[1];
-        console.log(token);
-        console.log(roles);
-
-        if (!roles) {
-            return true;
-        }
+        let token = request.headers.authorization
         if (!token) {
             throw new UnauthorizedException(" ");
         }
 
+        if (token.startsWith('Bearer')) {
+            token = token.split(' ')[1];
+        }
+
+        if (!roles) {
+            return true;
+        }
+
         const payload = await this.jwtService.verifyAsync(token, { secret: process.env.secret });
-        console.log(payload);
+        console.log(token, payload);
         if (!payload) {
             throw new HttpException("can't find payload", 403);
         }

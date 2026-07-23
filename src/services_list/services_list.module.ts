@@ -4,9 +4,11 @@ import { ServicesListController } from './services_list.controller';
 import { Mongoose } from 'mongoose';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ServicesListService } from './services_list.service';
+import { RoleGuard } from 'src/user/guard/guard';
+import { JwtModule } from '@nestjs/jwt';
 @Module({
-  imports: [MongooseModule.forFeature([{ name: 'ServicesList', schema: ServicesListSchema }])],
+  imports: [JwtModule.register({ secret: process.env.JWT_SECRET }), MongooseModule.forFeature([{ name: 'ServicesList', schema: ServicesListSchema }])],
   controllers: [ServicesListController],
-  providers: [ServicesListService],
+  providers: [ServicesListService, RoleGuard],
 })
 export class ServicesListModule { }

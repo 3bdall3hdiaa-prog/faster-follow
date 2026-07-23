@@ -24,7 +24,10 @@ import { MangePaymentsModule } from './mange-payments/mange-payments.module';
 import { ManageSettingModule } from './manage-setting/manage-setting.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ManageplatformsModule } from './manageplatforms/manageplatforms.module';
-
+import { ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerGuard } from '@nestjs/throttler';
+import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports: [ScheduleModule.forRoot(), ConfigModule.forRoot(), ConfigModule.forRoot({
     isGlobal: true,
@@ -37,9 +40,23 @@ import { ManageplatformsModule } from './manageplatforms/manageplatforms.module'
           pass: process.env.EMAIL_PASSWORD,
         },
       },
-    }), MongooseModule.forRoot(process.env.MONGO || ''), PayPalModule, AuthModule, NewOrderModule, AUTHAUTHOModule, UserModule, ServicesListModule, ManageUsersModule, ManageProvidersModule, BalanceUsersModule, TechnicalSupportModule, BlogModule, ManagepagesModule, ManagepannersModule, ManagecoponsModule, NotificationModule, ResetpasswordModule, MangePaymentsModule, ManageSettingModule, ManageplatformsModule],
+    }), MongooseModule.forRoot(process.env.MONGO || ''), PayPalModule, AuthModule, NewOrderModule, AUTHAUTHOModule, UserModule, ServicesListModule, ManageUsersModule, ManageProvidersModule, BalanceUsersModule, TechnicalSupportModule, BlogModule, ManagepagesModule, ManagepannersModule, ManagecoponsModule, NotificationModule, ResetpasswordModule, MangePaymentsModule, ManageSettingModule, ManageplatformsModule, ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 60000,
+          limit: 100,
+        },
+      ],
+    }), JwtModule.register({
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '1d' },
+    }),],
   controllers: [AppController],
-  providers: [AppService],
-  
+  providers: [AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard
+    }],
+
 })
 export class AppModule { }

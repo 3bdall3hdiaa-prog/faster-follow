@@ -3,9 +3,11 @@ import { ManageProvidersService } from './manage-providers.service';
 import { ManageProvidersController } from './manage-providers.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ManageProvidersSchema } from './schema';
+import { JwtModule } from '@nestjs/jwt';
+import { RoleGuard } from 'src/user/guard/guard';
 @Module({
-  imports: [MongooseModule.forFeature([{ name: 'ManageProviders', schema: ManageProvidersSchema }])],
+  imports: [JwtModule.register({ secret: process.env.JWT_SECRET }), MongooseModule.forFeature([{ name: 'ManageProviders', schema: ManageProvidersSchema }])],
   controllers: [ManageProvidersController],
-  providers: [ManageProvidersService],
+  providers: [ManageProvidersService, RoleGuard],
 })
 export class ManageProvidersModule { }

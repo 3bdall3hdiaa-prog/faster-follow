@@ -6,10 +6,12 @@ import { CoponsSchema } from './copons.schema';
 import { PaymentSchema } from '../pay-pal/pay-pal.shema';
 import { NotificationSchema } from '../notification/motification.schema';
 import { UserSchema } from 'src/auth_autho/auth.schema';
+import { RoleGuard } from 'src/user/guard/guard';
+import { JwtModule } from '@nestjs/jwt';
 @Module({
-  imports: [MongooseModule.forFeature([{ name: 'Managecopon', schema: CoponsSchema }]), MongooseModule.forFeature([{ name: 'Payment', schema: PaymentSchema }]),
+  imports: [JwtModule.register({ secret: process.env.JWT_SECRET }), MongooseModule.forFeature([{ name: 'Managecopon', schema: CoponsSchema }]), MongooseModule.forFeature([{ name: 'Payment', schema: PaymentSchema }]),
   MongooseModule.forFeature([{ name: 'Notification', schema: NotificationSchema }]), MongooseModule.forFeature([{ name: "auth_authos", schema: UserSchema }])],
   controllers: [ManagecoponsController],
-  providers: [ManagecoponsService],
+  providers: [ManagecoponsService, RoleGuard],
 })
 export class ManagecoponsModule { }

@@ -8,6 +8,7 @@ import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt';
 import axios from 'axios';
 import { ResetPasswordDocument } from 'src/resetpassword/resetpassword.schema';
+import { stat } from 'fs';
 @Injectable()
 export class AuthService {
   /*
@@ -54,6 +55,14 @@ export class AuthService {
     if (!username || !password) throw new HttpException(" يلزم ادخال الايميل والباسورد", 404);
     const user = await this.modell.findOne({ username });
     if (!user) throw new HttpException("المستخدم ليس موجود", 404);
+    const datareturnntouser = {
+      _id: user._id,
+      username: user.username,
+      role: user.role,
+      email: user.email,
+      is2FA: user.is2FA,
+      status: user.status
+    }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) throw new HttpException("  كلمة السر غير صحيح", 404);
     if (user.status == 'inactive') {
@@ -85,7 +94,7 @@ export class AuthService {
     return {
       status: 200,
       message: "user logged in",
-      user: user,
+      user: datareturnntouser,
       token: token
     };
 

@@ -1,13 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseGuards } from '@nestjs/common';
 import { ManagecoponsService } from './managecopons.service';
 import { CreateManagecoponDto } from './dto/create-managecopon.dto';
 import { UpdateManagecoponDto } from './dto/update-managecopon.dto';
+import { RoleGuard } from 'src/user/guard/guard';
+import { role } from 'src/user/user.customdecoratoe';
 
 @Controller('managecopons')
 export class ManagecoponsController {
   constructor(private readonly managecoponsService: ManagecoponsService) { }
 
   @Post()
+  @role(['admin'])
+  @UseGuards(RoleGuard)
   create(@Body() createManagecoponDto: CreateManagecoponDto) {
     return this.managecoponsService.create(createManagecoponDto);
   }
@@ -27,11 +31,15 @@ export class ManagecoponsController {
   }
 
   @Put(':id')
+  @role(['admin'])
+  @UseGuards(RoleGuard)
   update(@Param('id') id: string, @Body() updateManagecoponDto: UpdateManagecoponDto) {
     return this.managecoponsService.update(id, updateManagecoponDto);
   }
 
   @Delete(':id')
+  @role(['admin'])
+  @UseGuards(RoleGuard)
   remove(@Param('id') id: string) {
     return this.managecoponsService.remove(id);
   }

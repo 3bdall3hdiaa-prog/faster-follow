@@ -3,12 +3,22 @@ import { CreateManageUserDto } from './dto/create-manage-user.dto';
 import { UpdateManageUserDto } from './dto/update-manage-user.dto';
 import { Model } from 'mongoose';
 import { UserDocument } from 'src/auth_autho/auth.schema';
+import * as bcrypt from 'bcrypt'
 import { InjectModel } from '@nestjs/mongoose';
 @Injectable()
 export class ManageUsersService {
   constructor(@InjectModel('auth_authos') private readonly userModel: Model<UserDocument>) { }
-  create(createManageUserDto: CreateManageUserDto) {
-    return 'This action adds a new manageUser';
+  async create(createManageUserDto: CreateManageUserDto) {
+    const { username, role, email } = createManageUserDto
+    const hashpass = await bcrypt.hash(createManageUserDto.password, 10)
+    const data = await this.userModel.create({
+      username,
+      role,
+      email,
+      password: hashpass,
+    })
+
+    return data;
   }
 
   async getallusers() {
@@ -28,7 +38,5 @@ export class ManageUsersService {
     return data;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} manageUser`;
-  }
+
 }

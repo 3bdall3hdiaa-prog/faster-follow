@@ -18,7 +18,7 @@ export class ResetpasswordService {
     const { email } = createResetpasswordDto
     const user = await this.data.findOne({ email })
     if (!user) throw new Error("user not found")
-    const code = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
+    const code = Math.floor(Math.random() * 1000000).toString()
     const addcode = await this.userModel.create({ verificationCode: code, email: user.email })
     if (!addcode) throw new Error("code not added")
     //send code to user email

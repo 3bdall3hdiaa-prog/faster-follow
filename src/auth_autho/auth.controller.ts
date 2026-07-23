@@ -1,6 +1,7 @@
-import { Controller, Post, Body, ValidationPipe, Patch, Get, Res } from '@nestjs/common';
+import { Controller, Post, Body, ValidationPipe, Patch, Get, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
+import { ThrottlerGuard, Throttle } from '@nestjs/throttler';
 @Controller('/signup')
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
@@ -14,6 +15,7 @@ export class AuthController {
 export class loginController {
   constructor(private readonly authService: AuthService) { }
   @Post()
+  @Throttle({ default: { limit: 5, ttl: 50000 } })
   login(@Body(new ValidationPipe()) createAuthDto: CreateAuthDto) {
     return this.authService.login(createAuthDto);
   }

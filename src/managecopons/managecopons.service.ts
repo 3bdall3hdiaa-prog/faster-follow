@@ -14,6 +14,8 @@ export class ManagecoponsService {
     @InjectModel("Managecopon") private copon: Model<CoponsDocument>,
     @InjectModel('Notification') private readonly Notification: Model<NotificationDocument>,
     @InjectModel('auth_authos') private data: Model<UserDocument>) { }
+
+
   async create(createManagecoponDto: CreateManagecoponDto) {
     const createdManagecopon = new this.copon(createManagecoponDto);
     return await createdManagecopon.save();
