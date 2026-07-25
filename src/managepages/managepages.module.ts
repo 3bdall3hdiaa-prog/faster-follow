@@ -3,9 +3,11 @@ import { ManagepagesService } from './managepages.service';
 import { ManagepagesController } from './managepages.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ManagePagesSchema } from './managepages.schema';
+import { RoleGuard } from 'src/user/guard/guard';
+import { JwtModule } from '@nestjs/jwt';
 @Module({
-  imports: [MongooseModule.forFeature([{ name: 'ManagePages', schema: ManagePagesSchema }])],
+  imports: [JwtModule.register({ secret: process.env.JWT_SECRET }), MongooseModule.forFeature([{ name: 'ManagePages', schema: ManagePagesSchema }])],
   controllers: [ManagepagesController],
-  providers: [ManagepagesService],
+  providers: [ManagepagesService, RoleGuard],
 })
 export class ManagepagesModule { }

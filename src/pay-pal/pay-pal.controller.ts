@@ -17,7 +17,7 @@ export class PaypalController {
     try {
       const result = await this.paypalService.captureOrder(orderId, userName);
       return res.json(result);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       return res.status(500).json({
         message: 'Failed to capture order',

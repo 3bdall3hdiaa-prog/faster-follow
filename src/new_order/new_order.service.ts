@@ -28,7 +28,6 @@ export class NewOrderService {
       if (!provider) {
         throw new Error(`لم يتم العثور على مزود بهذا الاسم: ${newOrder.provider}`);
       }
-      console.log(provider);
       const providerUrl = provider.apiEndpoint;
       const apiKey = provider.apiKey;
 
@@ -67,7 +66,7 @@ export class NewOrderService {
           400,
         );
       }
-    } catch (error) {
+    } catch (error: any) {
       throw new HttpException(`حدث خطأ أثناء إنشاء الطلب: ${error.message}`, 500);
     }
   }
@@ -106,7 +105,7 @@ export class NewOrderService {
       } else {
         throw new HttpException('لم يتم العثور على حالة للطلب من المزود', 400);
       }
-    } catch (error) {
+    } catch (error: any) {
       throw new HttpException(`فشل في جلب حالة الطلب: ${error.message}`, 500);
     }
   }
@@ -177,7 +176,7 @@ export class NewOrderService {
       }
 
       console.log('✅ Auto update completed successfully');
-    } catch (err) {
+    } catch (err: any) {
       console.error('❌ Error during auto update:', err.message);
     }
   }

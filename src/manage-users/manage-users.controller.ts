@@ -3,20 +3,23 @@ import { ManageUsersService } from './manage-users.service';
 import { CreateManageUserDto } from './dto/create-manage-user.dto';
 import { UpdateManageUserDto } from './dto/update-manage-user.dto';
 import { ValidationPipe } from '@nestjs/common';
-import Roles from 'src/decorator/decorator'
 import { AuthGuard } from './guard/authguard'
+import { role } from 'src/user/user.customdecoratoe';
+import { RoleGuard } from 'src/user/guard/guard';
 @Controller('getallusers')
 export class ManageUsersController {
   constructor(private readonly manageUsersService: ManageUsersService) { }
 
   @Post()
-  @Roles(["admin"])
-  @UseGuards(AuthGuard)
+  @role(["admin"])
+  @UseGuards(RoleGuard)
   create(@Body() createManageUserDto: CreateManageUserDto) {
     return this.manageUsersService.create(createManageUserDto);
   }
 
   @Get()
+  @role(["admin"])
+  @UseGuards(RoleGuard)
   getallusers() {
     return this.manageUsersService.getallusers();
 
@@ -26,7 +29,7 @@ export class ManageUsersController {
 
 
   @Put(':id')
-  @Roles(["admin"])
+  @role(["admin"])
   @UseGuards(AuthGuard)
   update(@Param('id') id: string, @Body(new ValidationPipe) updateManageUserDto: UpdateManageUserDto) {
     return this.manageUsersService.update(id, updateManageUserDto);

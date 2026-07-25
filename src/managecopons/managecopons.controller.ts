@@ -15,17 +15,24 @@ export class ManagecoponsController {
   create(@Body() createManagecoponDto: CreateManagecoponDto) {
     return this.managecoponsService.create(createManagecoponDto);
   }
+
   @Post('editbalance')
+  @role(["admin"])
+  @UseGuards(RoleGuard)
   createe(@Body() createManagecoponDto: any) {
     return this.managecoponsService.createe(createManagecoponDto);
   }
   @Get()
+  @role(["admin"])
+  @UseGuards(RoleGuard)
   findAll() {
     return this.managecoponsService.findAll();
   }
 
 
   @Post('cheeckcoupon')
+  @role(["admin", "client"])
+  @UseGuards(RoleGuard)
   findOne(@Body() coupon: any) {
     return this.managecoponsService.findOne(coupon);
   }

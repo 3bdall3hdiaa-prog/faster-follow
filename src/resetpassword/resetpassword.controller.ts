@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { ResetpasswordService } from './resetpassword.service';
 import { CreateResetpasswordDto } from './dto/create-resetpassword.dto';
 import { UpdateResetpasswordDto } from './dto/update-resetpassword.dto';
 import { ChangePassword } from './dto/create-resetpassword.dto';
 import { ValidationPipe } from '@nestjs/common';
+import { role } from 'src/user/user.customdecoratoe';
+import { RoleGuard } from 'src/user/guard/guard';
 @Controller('resetpassword')
 export class ResetpasswordController {
   constructor(private readonly resetpasswordService: ResetpasswordService) { }
@@ -20,6 +22,8 @@ export class ResetpasswordController {
   }
 
   @Post('change-password')
+  @role(["admin", "client"])
+  @UseGuards(RoleGuard)
   changePassword(@Body(new ValidationPipe()) updateResetpasswordDto: ChangePassword) {
     return this.resetpasswordService.changePassword(updateResetpasswordDto);
   }

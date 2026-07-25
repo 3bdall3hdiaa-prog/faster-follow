@@ -4,9 +4,11 @@ import { ResetpasswordController } from './resetpassword.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ResetPasswordSchema } from './resetpassword.schema';
 import { UserSchema } from 'src/auth_autho/auth.schema';
+import { RoleGuard } from 'src/user/guard/guard';
+import { JwtModule } from '@nestjs/jwt';
 @Module({
-  imports: [MongooseModule.forFeature([{ name: 'Resetpassword', schema: ResetPasswordSchema }]), MongooseModule.forFeature([{ name: 'auth_autho', schema: UserSchema }])],
+  imports: [JwtModule.register({ secret: process.env.JWT_SECRET }), MongooseModule.forFeature([{ name: 'Resetpassword', schema: ResetPasswordSchema }]), MongooseModule.forFeature([{ name: 'auth_autho', schema: UserSchema }])],
   controllers: [ResetpasswordController],
-  providers: [ResetpasswordService],
+  providers: [ResetpasswordService, RoleGuard],
 })
 export class ResetpasswordModule { }
