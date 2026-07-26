@@ -13,8 +13,11 @@ export class ManagePanners {
     ctaText: string;
     @Prop()
     ctaLink: string;
-    @Prop()
-    imageUrl: string;
+    @Prop({ type: Object })
+    image!: {
+        url: string,
+        public_id: string
+    };
     @Prop()
     isActive: boolean;
 }

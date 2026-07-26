@@ -28,6 +28,8 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { JwtModule } from '@nestjs/jwt';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { ReviewsModule } from './reviews/reviews.module';
 @Module({
   imports: [ScheduleModule.forRoot(), ConfigModule.forRoot(), ConfigModule.forRoot({
     isGlobal: true,
@@ -50,7 +52,7 @@ import { JwtModule } from '@nestjs/jwt';
     }), JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '1d' },
-    }),],
+    }), CloudinaryModule, ReviewsModule],
   controllers: [AppController],
   providers: [AppService,
     {

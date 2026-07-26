@@ -19,12 +19,30 @@ export class ManageSettingService {
 
 
 
-  async update(updateManageSettingDto: UpdateManageSettingDto) {
-    const data = await this.userModel.find({})
+  async update(updateManageSettingDto: any, file: any) {
+    const data = await this.userModel.find({});
 
-    const update = await this.userModel.findOneAndUpdate({ _id: data[0]._id }, { ...updateManageSettingDto }, { new: true });
-    return update
+    const form = { ...updateManageSettingDto };
+
+    if (typeof form.announcement === "string") {
+      form.announcement = JSON.parse(form.announcement);
+    }
+
+    if (typeof form.homepageContent === "string") {
+      form.homepageContent = JSON.parse(form.homepageContent);
+    }
+
+    if (file) {
+      form.logo = {
+        url: file.url,
+        public_id: file.public_id,
+      };
+    }
+    return await this.userModel.findOneAndUpdate(
+      { _id: data[0]._id },
+      form,
+      { new: true }
+    );
   }
-
 
 }

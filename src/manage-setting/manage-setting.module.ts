@@ -5,9 +5,10 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { SiteSettingsSchema } from './schema';
 import { RoleGuard } from 'src/user/guard/guard';
 import { JwtModule } from '@nestjs/jwt';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 @Module({
   imports: [JwtModule.register({ secret: 'secret' }), MongooseModule.forFeature([{ name: 'ManageSetting', schema: SiteSettingsSchema }])],
   controllers: [ManageSettingController],
-  providers: [ManageSettingService, RoleGuard],
+  providers: [ManageSettingService, RoleGuard, CloudinaryService],
 })
 export class ManageSettingModule { }

@@ -108,8 +108,11 @@ export class SiteSettings extends Document {
     @Prop({ required: true })
     siteName: string;
 
-    @Prop()
-    logoUrl: string;
+    @Prop({ type: Object })
+    logo: {
+        url: string;
+        public_id: string;
+    };
 
     @Prop()
     faviconUrl: string;

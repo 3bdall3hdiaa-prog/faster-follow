@@ -6,53 +6,51 @@ export type ServicesListDocument = HydratedDocument<ServicesList>;
 
 @Schema({ timestamps: true })
 export class ServicesList {
-    // رقم الخدمة عند المزود (مهم جدًا)
-    @Prop({ required: true })
-    providerServiceId: number;
 
-    // مرجع للمزود اللي الخدمة جاية منه
+    @Prop({ required: true })
+    providerServiceId!: number;
+
     @Prop({ type: Types.ObjectId, ref: 'Provider', required: true })
-    provider: ManageProviders;
+    provider!: ManageProviders;
 
-    // المنصة (زي Instagram / YouTube / TikTok)
     @Prop({ required: true })
-    platform: string;
+    platform!: string;
 
-    // اسم الخدمة عندك (ممكن يكون مختلف عن المزود)
     @Prop({ required: true })
-    title: string;
+    title!: string;
 
-    // السعر لكل 1000 وحدة عندك (اللي العميل بيشوفه)
     @Prop({ required: true })
-    price: number;
+    price!: number;
 
-    // السعر الحقيقي عند المزود (عشان تعرف مكسبك)
+    //السعر الحقيقي عند المزود 
     @Prop({ required: true })
-    providerRate: number;
+    providerRate!: number;
 
     // الحد الأدنى
     @Prop({ required: true })
-    min: number;
+    min!: number;
 
     // الحد الأقصى
     @Prop({ required: true })
-    max: number;
+    max!: number;
 
     // نوع الخدمة (default / drip-feed / custom comments...)
     @Prop()
     type?: string;
 
-    // وصف الخدمة أو ملاحظات عنها
     @Prop()
     description?: string;
 
-    // هل الخدمة نشطة ومفعلة للعرض في موقعك
     @Prop({ default: true })
-    status: boolean;
+    status!: boolean;
+
+    @Prop({ type: Object })
+    image!: {
+        url: string,
+        public_id: string
+    }
     @Prop()
-    imageUrl: string
-    @Prop()
-    descriptionAr: string
+    descriptionAr!: string
 }
 
 export const ServicesListSchema = SchemaFactory.createForClass(ServicesList);
