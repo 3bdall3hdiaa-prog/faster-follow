@@ -10,7 +10,7 @@ export class ServicesList {
     @Prop({ required: true })
     providerServiceId!: number;
 
-    @Prop({ type: Types.ObjectId, ref: 'Provider', required: true })
+    @Prop({ type: Types.ObjectId, ref: 'ManageProviders', required: true })
     provider!: ManageProviders;
 
     @Prop({ required: true })

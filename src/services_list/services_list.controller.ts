@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseGuards, UseInterceptors, UploadedFile, Query } from '@nestjs/common';
 import { ServicesListService } from './services_list.service';
 import { role } from 'src/user/user.customdecoratoe';
 import { RoleGuard } from 'src/user/guard/guard';
@@ -14,7 +14,8 @@ export class ServicesListController {
   @UseGuards(RoleGuard)
   @UseInterceptors(FileInterceptor('file'))
   async create(@Body() createServicesListDto: any, @UploadedFile() file: any) {
-    const getFile = await this.cloudinaryService.uploadFile(file);
+    let getFile
+    if (file) getFile = await this.cloudinaryService.uploadFile(file);
     return this.servicesListService.create(createServicesListDto, getFile);
   }
 
@@ -42,5 +43,8 @@ export class ServicesListController {
     return this.servicesListService.remove(id);
   }
 
-
+  @Get('getdata')
+  async getdata(@Query() query: { key: string, apiEndpoint: string, page: number }) {
+    return this.servicesListService.getdata(query);
+  }
 }

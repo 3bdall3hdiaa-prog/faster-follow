@@ -8,8 +8,9 @@ import { RoleGuard } from 'src/user/guard/guard';
 import { JwtModule } from '@nestjs/jwt';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { CloudinaryProvider } from 'src/cloudinary/cloudinary.provider';
+import { ManageProvidersSchema } from 'src/manage-providers/schema';
 @Module({
-  imports: [JwtModule.register({ secret: process.env.JWT_SECRET }), MongooseModule.forFeature([{ name: 'ServicesList', schema: ServicesListSchema }])],
+  imports: [JwtModule.register({ secret: process.env.JWT_SECRET }), MongooseModule.forFeature([{ name: 'ServicesList', schema: ServicesListSchema }]), MongooseModule.forFeature([{ name: 'ManageProviders', schema: ManageProvidersSchema }])],
   controllers: [ServicesListController],
   providers: [ServicesListService, RoleGuard, CloudinaryService, CloudinaryProvider],
 })
