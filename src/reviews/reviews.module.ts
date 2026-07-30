@@ -7,7 +7,7 @@ import { RoleGuard } from 'src/user/guard/guard';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [JwtModule.register({ secret: process.env.JWT_SECRET }), MongooseModule.forFeature([{ name: 'Review', schema: ReviewsSchema }])],
+  imports: [JwtModule.register({ secret: process.env.secret }), MongooseModule.forFeature([{ name: 'Review', schema: ReviewsSchema }])],
   controllers: [ReviewsController],
   providers: [ReviewsService, RoleGuard],
 })

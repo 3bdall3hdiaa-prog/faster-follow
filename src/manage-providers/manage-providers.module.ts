@@ -6,7 +6,7 @@ import { ManageProvidersSchema } from './schema';
 import { JwtModule } from '@nestjs/jwt';
 import { RoleGuard } from 'src/user/guard/guard';
 @Module({
-  imports: [JwtModule.register({ secret: process.env.JWT_SECRET }), MongooseModule.forFeature([{ name: 'ManageProviders', schema: ManageProvidersSchema }])],
+  imports: [JwtModule.register({ secret: process.env.secret }), MongooseModule.forFeature([{ name: 'ManageProviders', schema: ManageProvidersSchema }])],
   controllers: [ManageProvidersController],
   providers: [ManageProvidersService, RoleGuard],
 })

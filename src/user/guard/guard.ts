@@ -7,52 +7,56 @@ import { HttpException, UnauthorizedException } from "@nestjs/common/exceptions"
 export class RoleGuard implements CanActivate {
     constructor(private readonly reflector: Reflector, private readonly jwtService: JwtService) { }
     async canActivate(context: ExecutionContext): Promise<boolean> { //يبقي الفنكشن هترجع بروميس async/await  طلما مستخدم 
-        console.log("hello");
-        const roles = this.reflector.get(role, context.getHandler());
+        try {
 
-        if (!roles) {
+            console.log("hello");
+            const roles = this.reflector.get(role, context.getHandler());
+
+            if (!roles) {
+                return true;
+            }
+            const request = context.switchToHttp().getRequest();
+            // const token = request.headers.authorization
+            let token = request.headers.authorization
+            if (!token) {
+                throw new UnauthorizedException(" ");
+            }
+
+            if (token.startsWith('Bearer')) {
+                token = token.split(' ')[1];
+            }
+
+            if (!roles) {
+                return true;
+            }
+            const payload = await this.jwtService.verifyAsync(token, { secret: process.env.secret });
+            if (!payload) {
+                throw new HttpException("can't find payload", 403);
+            }
+            // بقولوا لو الوظيفه ادمن عدي الجارد علطول
+            if (payload._id && payload.role.toLowerCase() === 'admin') { // لو في ايدي في الباي لود اعمل الكلام ده
+                request['user'] = payload;// هنا ببعت الباي لود في الريكويست بعمل اوبجيكت اسمه يوزر في الريكويست وجوا اوبجيكت الباي لود
+                return true;
+            }
+            //ابعت ايرور ولو مفيش وظيفه مبعوته ابعت ايرورdecorator لو في وظيفه مبعوته والوظيفه دي مش موجوده في ال 
+            if (
+                !payload.role ||
+                payload.role === '' ||
+                !roles.includes(payload.role)
+            ) {
+                throw new HttpException("not allowed", 403);
+            }
+            // 💡 We're assigning the payload to the request object here
+            // so that we can access it in our route handlers
+            request['user'] = payload;
+
+
+
+
             return true;
+        } catch (error: any) {
+            console.log(error);
+            throw new HttpException(error, 403);
         }
-        const request = context.switchToHttp().getRequest();
-        // const token = request.headers.authorization
-        let token = request.headers.authorization
-        if (!token) {
-            throw new UnauthorizedException(" ");
-        }
-
-        if (token.startsWith('Bearer')) {
-            token = token.split(' ')[1];
-        }
-
-        if (!roles) {
-            return true;
-        }
-
-        const payload = await this.jwtService.verifyAsync(token, { secret: process.env.secret });
-        console.log(token, payload);
-        if (!payload) {
-            throw new HttpException("can't find payload", 403);
-        }
-        // بقولوا لو الوظيفه ادمن عدي الجارد علطول
-        if (payload._id && payload.role.toLowerCase() === 'admin') { // لو في ايدي في الباي لود اعمل الكلام ده
-            request['user'] = payload;// هنا ببعت الباي لود في الريكويست بعمل اوبجيكت اسمه يوزر في الريكويست وجوا اوبجيكت الباي لود
-            return true;
-        }
-        //ابعت ايرور ولو مفيش وظيفه مبعوته ابعت ايرورdecorator لو في وظيفه مبعوته والوظيفه دي مش موجوده في ال 
-        if (
-            !payload.role ||
-            payload.role === '' ||
-            !roles.includes(payload.role)
-        ) {
-            throw new HttpException("not allowed", 403);
-        }
-        // 💡 We're assigning the payload to the request object here
-        // so that we can access it in our route handlers
-        request['user'] = payload;
-
-
-
-
-        return true;
     }
 }

@@ -12,7 +12,7 @@ import { JwtModule } from '@nestjs/jwt';
   imports: [ConfigModule.forRoot(),
   MongooseModule.forFeature([{ name: 'NewOrder', schema: UserSchema }]),
   MongooseModule.forFeature([{ name: 'ManageProviders', schema: ManageProvidersSchema }]),
-  JwtModule.register({ secret: process.env.JWT_SECRET }),
+  JwtModule.register({ secret: process.env.secret }),
   ],
   controllers: [NewOrderController],
   providers: [NewOrderService, RoleGuard],

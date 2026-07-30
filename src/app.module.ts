@@ -50,7 +50,7 @@ import { ReviewsModule } from './reviews/reviews.module';
         },
       ],
     }), JwtModule.register({
-      secret: process.env.JWT_SECRET,
+      secret: process.env.secret,
       signOptions: { expiresIn: '1d' },
     }), CloudinaryModule, ReviewsModule],
   controllers: [AppController],

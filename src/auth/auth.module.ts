@@ -8,8 +8,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema } from './auth.schema';
 @Module({
   imports: [JwtModule.register({
-    secret: 'secret',
-    signOptions: { expiresIn: '1h' },
+    secret: process.env.secret,
   }), HttpModule, MongooseModule.forFeature([{ name: "auth_authos", schema: UserSchema }])],
   controllers: [AuthController],
   providers: [AuthService, GoogleStrategy],

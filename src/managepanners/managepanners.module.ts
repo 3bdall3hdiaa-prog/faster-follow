@@ -8,7 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { CloudinaryProvider } from 'src/cloudinary/cloudinary.provider';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 @Module({
-  imports: [JwtModule.register({ secret: process.env.JWT_SECRET }), MongooseModule.forFeature([{ name: 'Managepanners', schema: ManagePannersSchema }])],
+  imports: [JwtModule.register({ secret: process.env.secret }), MongooseModule.forFeature([{ name: 'Managepanners', schema: ManagePannersSchema }])],
   controllers: [ManagepannersController],
   providers: [ManagepannersService, RoleGuard, CloudinaryService, CloudinaryProvider],
 })

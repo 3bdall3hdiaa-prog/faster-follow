@@ -8,7 +8,6 @@ import { RoleGuard } from 'src/user/guard/guard';
 @Module({
   imports: [JwtModule.register({ secret: process.env.secret }), MongooseModule.forFeature([{ name: 'auth_authos', schema: UserSchema }]), JwtModule.register({
     secret: process.env.secret,
-    signOptions: { expiresIn: '24h' }
   })],
   controllers: [ManageUsersController],
   providers: [ManageUsersService, RoleGuard],

@@ -7,7 +7,7 @@ import { RoleGuard } from 'src/user/guard/guard';
 import { JwtModule } from '@nestjs/jwt';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 @Module({
-  imports: [JwtModule.register({ secret: 'secret' }), MongooseModule.forFeature([{ name: 'ManageSetting', schema: SiteSettingsSchema }])],
+  imports: [JwtModule.register({ secret: process.env.secret }), MongooseModule.forFeature([{ name: 'ManageSetting', schema: SiteSettingsSchema }])],
   controllers: [ManageSettingController],
   providers: [ManageSettingService, RoleGuard, CloudinaryService],
 })
