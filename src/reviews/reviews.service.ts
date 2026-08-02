@@ -13,6 +13,10 @@ export class ReviewsService {
     return review
   }
 
+  async findReviewsIsPublished() {
+    const data = await this.reviewModel.find({ isPublished: true }).populate('userId', ['username', 'email']).populate('serviceId', 'title');
+    return data
+  }
   async findAll() {
     const data = await this.reviewModel.find().populate('userId', ['username', 'email']).populate('serviceId', 'title');
     return data
@@ -20,13 +24,17 @@ export class ReviewsService {
 
   findOne(id: string) {
     if (!id) throw new HttpException("service not found", 404);
-    const data = this.reviewModel.find({ serviceId: id }).populate('userId', 'username').populate('serviceId', 'title');
+    const data = this.reviewModel.find({ serviceId: id, isPublished: true }).populate('userId', 'username').populate('serviceId', 'title');
     return data
   }
 
-  // update(id: number, updateReviewDto: UpdateReviewDto) {
-  //   return `This action updates a #${id} review`;
-  // }
+  async update(id: string, updateReviewDto: { isPublished: boolean }) {
+    const check = await this.reviewModel.findById(id);
+    if (!check) throw new HttpException("comment not found", 404);
+    const data = await this.reviewModel.findOneAndUpdate({ _id: id }, updateReviewDto, { new: true });
+    return data
+
+  }
 
   async remove(id: string) {
     const check = await this.reviewModel.findById(id);

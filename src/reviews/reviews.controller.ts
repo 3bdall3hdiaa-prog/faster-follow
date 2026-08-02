@@ -17,6 +17,10 @@ export class ReviewsController {
   }
 
   @Get()
+  findReviewsIsPublished() {
+    return this.reviewsService.findReviewsIsPublished();
+  }
+  @Get("admin")
   findAll() {
     return this.reviewsService.findAll();
   }
@@ -26,10 +30,10 @@ export class ReviewsController {
     return this.reviewsService.findOne(id);
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateReviewDto: UpdateReviewDto) {
-  //   return this.reviewsService.update(+id, updateReviewDto);
-  // }
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateReviewDto: { isPublished: boolean }) {
+    return this.reviewsService.update(id, updateReviewDto);
+  }
 
   @Delete(':id')
   @role(['admin'])

@@ -3,12 +3,15 @@ import { HydratedDocument } from 'mongoose';
 export type ManagePlatformsDocument = HydratedDocument<ManagePlatforms>;
 @Schema()
 export class ManagePlatforms {
-    @Prop()
-    id: string;
-    @Prop()
+    @Prop({ unique: true, required: true })
+    slug: string;
+    @Prop({ required: true, unique: true })
     name: string;
-    @Prop()
-    iconUrl: string;
+    @Prop({ type: Object, required: false })
+    image: {
+        url: string,
+        public_id: string
+    };
 
 }
 

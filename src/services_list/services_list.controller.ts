@@ -4,6 +4,8 @@ import { role } from 'src/user/user.customdecoratoe';
 import { RoleGuard } from 'src/user/guard/guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { CreateServicesListDto } from './dto/create-services_list.dto';
+import { UpdateServicesListDto } from './dto/update-services_list.dto';
 
 @Controller('services-list')
 export class ServicesListController {
@@ -13,7 +15,7 @@ export class ServicesListController {
   @role(['admin'])
   @UseGuards(RoleGuard)
   @UseInterceptors(FileInterceptor('file'))
-  async create(@Body() createServicesListDto: any, @UploadedFile() file: any) {
+  async create(@Body() createServicesListDto: CreateServicesListDto, @UploadedFile() file: any) {
     let getFile
     if (file) getFile = await this.cloudinaryService.uploadFile(file);
     return this.servicesListService.create(createServicesListDto, getFile);
@@ -47,4 +49,17 @@ export class ServicesListController {
   async getdata(@Query() query: { key: string, apiEndpoint: string, page: number }) {
     return this.servicesListService.getdata(query);
   }
+  @Get('/getOne/:slug')
+  async getOne(@Param() data: any) {
+    return this.servicesListService.getOne(data)
+  }
+  @Get('/:id')
+  async getService(@Param('id') id: string) {
+    return this.servicesListService.getService(id)
+  }
+  // @Post('total-price')
+  // async getTotalPrice(@Body() data: { serviceId: string, quantity: number }) {
+  //   return this.servicesListService.getTotalPrice(data)
+  // }
+
 }
