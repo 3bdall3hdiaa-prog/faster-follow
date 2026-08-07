@@ -38,10 +38,11 @@ export class ResetpasswordService {
   async verifyCode(code: any) {
     const { verificationCode } = code
     const user: any = await this.userModel.findOne({ verificationCode })
+    const data = await this.data.findOne({ email: user?.email })
     const payload: any = {
-      _id: user?._id,
-      username: user?.username,
-      role: user?.role,
+      _id: data?._id,
+      username: data?.username,
+      role: data?.role,
     }
     const token = await this.jwtService.signAsync(payload, { secret: process.env.secret })
     if (!token) throw new HttpException("user ttt found", 404);

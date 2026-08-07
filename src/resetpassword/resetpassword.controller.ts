@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { ResetpasswordService } from './resetpassword.service';
 import { CreateResetpasswordDto } from './dto/create-resetpassword.dto';
-import { UpdateResetpasswordDto } from './dto/update-resetpassword.dto';
 import { ChangePassword } from './dto/create-resetpassword.dto';
 import { ValidationPipe } from '@nestjs/common';
 import { role } from 'src/user/user.customdecoratoe';

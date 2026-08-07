@@ -12,19 +12,5 @@ export class BalanceUsersService {
     return createdUser
   }
 
-  findAll() {
-    return `This action returns all balanceUsers`;
-  }
 
-  findOne(id: number) {
-    return `This action returns a #${id} balanceUser`;
-  }
-
-  update(id: string, updateBalanceUserDto: UpdateBalanceUserDto) {
-    return `This action updates a #${id} balanceUser`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} balanceUser`;
-  }
 }

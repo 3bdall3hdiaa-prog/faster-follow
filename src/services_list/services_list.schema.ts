@@ -52,6 +52,9 @@ export class ServicesList {
     @Prop()
     descriptionAr!: string
 
+    @Prop()
+    refill!: boolean
+
     @Prop({ required: false })
     discount_for_2000!: number
     @Prop({ required: false })

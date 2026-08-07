@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { NewOrderService } from './new_order.service';
 import { CreateNewOrderDto } from './dto/create-new_order.dto';
 import { UpdateNewOrderDto } from './dto/update-new_order.dto';
@@ -28,11 +28,11 @@ export class NewOrderController {
     return this.newOrderService.findAll();
   }
 
-  @Get(':id')
+  @Get('me')
   @role(["admin", "client"])
   @UseGuards(RoleGuard)
-  findOne(@Param('id') id: string) {
-    return this.newOrderService.findOne(+id);
+  findOne(@Req() req: any) {
+    return this.newOrderService.findOne(req.user._id);
   }
 
   @Patch(':id')

@@ -1,6 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserDocument } from './auth.schema';
 import { Model } from 'mongoose';
@@ -8,21 +7,10 @@ import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt';
 import axios from 'axios';
 import { ResetPasswordDocument } from 'src/resetpassword/resetpassword.schema';
-import { stat } from 'fs';
 @Injectable()
 export class AuthService {
-  /*
-  لكن في 
-  NestJS 
-  لازم تعمل 
-  Inject 
-  لـ JwtService
-   من @nestjs/jwt 
-   في
-    الـ constructor
-     وبعدين تستخدمها
-      كـ this.jwtService.signAsync(...).
-  */
+
+
   constructor(@InjectModel("auth_autho") private modell: Model<UserDocument>, private jwtService: JwtService,
     @InjectModel('Resetpassword') private readonly userModel: Model<ResetPasswordDocument>
   ) { }
@@ -99,18 +87,7 @@ export class AuthService {
     };
 
   }
-  // async update(createAuthDto: UpdateAuthDto) {
-  //   const { username, email, } = createAuthDto;
-  //   const user = await this.modell.findOne({ username });
-  //   if (!user) throw new HttpException("user not found", 404);
-  //   const updatedUser = await this.modell.findOneAndUpdate({ username }, { $set: { email } }, { new: true });
-  //   return {
-  //     status: 200,
-  //     message: "user updated",
-  //     user: updatedUser
-  //   };
 
-  // }
 
 
 
@@ -120,15 +97,7 @@ export class AuthService {
     if (!getuser) throw new HttpException("user not found", 404);
     const update = await this.modell.findOneAndUpdate({ username: createAuthDto.username }, { is2FA }, { new: true })
     if (!update) throw new HttpException("user not found", 404);
-    // if (getuser.is2FA === true) {
-    //   return {
-    //     message: "2fa already enabled"
-    //   }
-    // }
-    // else {
-    //   getuser.is2FA = true
-    // }
-    // await getuser.save()
+
     return {
       message: "2fa enabled",
       data: update

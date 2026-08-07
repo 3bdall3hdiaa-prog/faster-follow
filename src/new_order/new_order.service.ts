@@ -113,12 +113,14 @@ export class NewOrderService {
 
 
   async findAll() {
-    const data = await this.newOrderModel.find();
+    const data = await this.newOrderModel.find().populate('provider').populate('serviceId');
     return data
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} newOrder`;
+  async findOne(id: string) {
+    const data = await this.newOrderModel.find({ id_user: id }).populate('provider').populate('serviceId');
+    if (!data || data.length === 0) throw new HttpException(" not found", 404);
+    return data
   }
 
   async update(id: string, updateNewOrderDto: UpdateNewOrderDto) {

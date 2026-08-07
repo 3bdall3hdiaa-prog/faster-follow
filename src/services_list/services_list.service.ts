@@ -26,6 +26,7 @@ export class ServicesListService {
         min: el.min,
         max: el.max,
         platform: el.category,
+        refill: el.refill,
       });
     }))
     await addService
@@ -120,6 +121,27 @@ export class ServicesListService {
 
     return data
   }
+
+  async refill(data: { order: string, key: string, apiEndpoint: string }) {
+    if (!data.order) throw new HttpException("orderId not provided", 404);
+    const res = await axios.post(data.apiEndpoint, {
+      key: data.key,
+      action: 'refill',
+      order: data.order
+    });
+    if (res.data.status !== 'success') throw new HttpException(res.data.message, 404);
+    const refillData = res.data;
+    if (!refillData) throw new HttpException("service not found", 404);
+    return refillData
+  }
+
+
+
+
+
+
+
+
   // async getTotalPrice(data: { serviceId: string, quantity: number }) {
   //   const { quantity } = data
   //   if (!data.serviceId || !data.quantity) throw new HttpException("serviceId and quantity are required", 404);

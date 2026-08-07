@@ -12,23 +12,5 @@ export class BalanceUsersController {
     return this.balanceUsersService.create(createBalanceUserDto);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.balanceUsersService.findAll();
-  // }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.balanceUsersService.findOne(+id);
-  // }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateBalanceUserDto: UpdateBalanceUserDto) {
-  //   return this.balanceUsersService.update(id, updateBalanceUserDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.balanceUsersService.remove(+id);
-  // }
 }

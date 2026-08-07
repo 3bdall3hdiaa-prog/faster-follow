@@ -3,7 +3,6 @@ import { ManageUsersService } from './manage-users.service';
 import { CreateManageUserDto } from './dto/create-manage-user.dto';
 import { UpdateManageUserDto } from './dto/update-manage-user.dto';
 import { ValidationPipe } from '@nestjs/common';
-import { AuthGuard } from './guard/authguard'
 import { role } from 'src/user/user.customdecoratoe';
 import { RoleGuard } from 'src/user/guard/guard';
 @Controller('getallusers')
@@ -30,7 +29,7 @@ export class ManageUsersController {
 
   @Put(':id')
   @role(["admin"])
-  @UseGuards(AuthGuard)
+  @UseGuards(RoleGuard)
   update(@Param('id') id: string, @Body(new ValidationPipe) updateManageUserDto: UpdateManageUserDto) {
     return this.manageUsersService.update(id, updateManageUserDto);
   }

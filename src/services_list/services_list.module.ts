@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ServicesListSchema } from './services_list.schema';
 import { ServicesListController } from './services_list.controller';
-import { Mongoose } from 'mongoose';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ServicesListService } from './services_list.service';
 import { RoleGuard } from 'src/user/guard/guard';

@@ -1,11 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseGuards, UseInterceptors, UploadedFile, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards, UseInterceptors, UploadedFile, Query } from '@nestjs/common';
 import { ServicesListService } from './services_list.service';
 import { role } from 'src/user/user.customdecoratoe';
 import { RoleGuard } from 'src/user/guard/guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { CreateServicesListDto } from './dto/create-services_list.dto';
-import { UpdateServicesListDto } from './dto/update-services_list.dto';
 
 @Controller('services-list')
 export class ServicesListController {
@@ -57,6 +56,17 @@ export class ServicesListController {
   async getService(@Param('id') id: string) {
     return this.servicesListService.getService(id)
   }
+
+  @Post('refill')
+  refill(@Body() data: { order: string, key: string, apiEndpoint: string }) {
+    return this.servicesListService.refill(data)
+  }
+
+
+
+
+
+
   // @Post('total-price')
   // async getTotalPrice(@Body() data: { serviceId: string, quantity: number }) {
   //   return this.servicesListService.getTotalPrice(data)

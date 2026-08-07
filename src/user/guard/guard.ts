@@ -9,9 +9,7 @@ export class RoleGuard implements CanActivate {
     async canActivate(context: ExecutionContext): Promise<boolean> { //يبقي الفنكشن هترجع بروميس async/await  طلما مستخدم 
         try {
 
-            console.log("hello");
             const roles = this.reflector.get(role, context.getHandler());
-
             if (!roles) {
                 return true;
             }
@@ -29,12 +27,12 @@ export class RoleGuard implements CanActivate {
             if (!roles) {
                 return true;
             }
-            const payload = await this.jwtService.verifyAsync(token, { secret: process.env.secret });
+            const payload: any = await this.jwtService.verifyAsync(token, { secret: process.env.secret });
             if (!payload) {
                 throw new HttpException("can't find payload", 403);
             }
             // بقولوا لو الوظيفه ادمن عدي الجارد علطول
-            if (payload._id && payload.role.toLowerCase() === 'admin') { // لو في ايدي في الباي لود اعمل الكلام ده
+            if (payload._id && payload.role === 'admin') { // لو في ايدي في الباي لود اعمل الكلام ده
                 request['user'] = payload;// هنا ببعت الباي لود في الريكويست بعمل اوبجيكت اسمه يوزر في الريكويست وجوا اوبجيكت الباي لود
                 return true;
             }
