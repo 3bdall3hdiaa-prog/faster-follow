@@ -8,8 +8,7 @@ export class AuthController {
   @Post()
   async signup(@Body(new ValidationPipe()) createAuthDto: CreateAuthDto, @Res() res: any) {
     const result = await this.authService.signup(createAuthDto);
-    console.log(result.token)
-    res.cookie('token', result.token, { httpOnly: true, secure: true, sameSite: 'lax' });
+    res.cookie('token', result.token, { httpOnly: true, secure: true, sameSite: 'none' });
     return res.status(result.status).json({
       status: result.status,
       message: result.message,
@@ -26,11 +25,11 @@ export class loginController {
   async login(@Body(new ValidationPipe()) createAuthDto: CreateAuthDto, @Res() res: any) {
 
     const result = await this.authService.login(createAuthDto);
-    console.log(result.token)
+
     res.cookie('token', result.token, {
       httpOnly: true,
       secure: true,
-      sameSite: 'lax',
+      sameSite: 'none',
     });
 
     return res.status(result.status).json({

@@ -31,7 +31,7 @@ export class AuthController {
       // إنشاء التوكن
       const tokenResult = await this.authService.generateToken(dbUser);
 
-      res.cookie('token', tokenResult.token, { httpOnly: true, secure: true, sameSite: 'lax' });
+      res.cookie('token', tokenResult.token, { httpOnly: true, secure: true, sameSite: 'none' });
       // التوجيه للفرونت إند
       const frontendUrl = `${process.env.API_FRONT}/#/callback`;
       return res.redirect(frontendUrl);
@@ -52,7 +52,7 @@ export class AuthController {
 
   @Get('/logout')
   async logout(@Res() res: any) {
-    res.clearCookie('token', { httpOnly: true, secure: true, sameSite: 'lax' });
+    res.clearCookie('token', { httpOnly: true, secure: true, sameSite: 'none' });
     return res.status(200).json({
       message: 'Logout successful',
       success: true,
