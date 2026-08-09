@@ -8,7 +8,10 @@ export class AuthController {
   @Post()
   async signup(@Body(new ValidationPipe()) createAuthDto: CreateAuthDto, @Res() res: any) {
     const result = await this.authService.signup(createAuthDto);
-    res.cookie('token', result.token, { httpOnly: true, secure: true, sameSite: 'lax' });
+    res.cookie('token', result.token, {
+      httpOnly: true, secure: true, sameSite: 'none', path: '/',
+      maxAge: 24 * 60 * 60 * 1000,
+    });
     return res.status(result.status).json({
       status: result.status,
       message: result.message,
@@ -32,8 +35,10 @@ export class loginController {
     res.cookie('token', result.token, {
       httpOnly: true,
       secure: true,
-      sameSite: 'lax',
+      sameSite: 'none', path: '/',
+      maxAge: 24 * 60 * 60 * 1000,
     });
+    console.log('SET-COOKIE HEADER:', res.getHeader('Set-Cookie'));
     console.log(result)
     return res.status(result.status).json({
       status: result.status,
