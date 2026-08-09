@@ -8,17 +8,25 @@ export class RoleGuard implements CanActivate {
     constructor(private readonly reflector: Reflector, private readonly jwtService: JwtService) { }
     async canActivate(context: ExecutionContext): Promise<boolean> { //يبقي الفنكشن هترجع بروميس async/await  طلما مستخدم 
         try {
+            console.log('hello phone')
             const roles = this.reflector.get(role, context.getHandler());
             if (!roles) {
                 return true;
             }
             const request = context.switchToHttp().getRequest();
-            const token = request.cookies.token
 
+            console.log('========== AUTH DEBUG ==========');
+            console.log('METHOD:', request.method);
+            console.log('URL:', request.originalUrl);
+            console.log('ORIGIN:', request.headers.origin);
+            console.log('COOKIES:', request.cookies);
+            console.log('TOKEN EXISTS:', !!request.cookies?.token);
+            console.log('================================');
+            const token = request.cookies.token
             if (!token) {
                 throw new UnauthorizedException(" ");
             }
-
+            console.log('token received', token)
 
             if (!roles) {
                 return true;
