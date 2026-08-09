@@ -16,9 +16,9 @@ export class ManageProvidersController {
     return this.manageProvidersService.create(createManageProviderDto);
   }
 
+  // @role(["admin", "client"])
+  // @UseGuards(RoleGuard)
   @Get()
-  @role(["admin", "client"])
-  @UseGuards(RoleGuard)
   findAll() {
     return this.manageProvidersService.findAll();
   }
