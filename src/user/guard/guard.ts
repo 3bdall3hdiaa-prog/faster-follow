@@ -15,19 +15,14 @@ export class RoleGuard implements CanActivate {
             }
             const request = context.switchToHttp().getRequest();
 
-            console.log('========== AUTH DEBUG ==========');
-            console.log('METHOD:', request.method);
-            console.log('URL:', request.originalUrl);
-            console.log('ORIGIN:', request.headers.origin);
-            console.log('COOKIES:', request.cookies);
-            console.log('TOKEN EXISTS:', !!request.cookies?.token);
-            console.log('================================');
-            const token = request.cookies.token
+
+            let token = request.cookies.token || request.headers.authorization;
             if (!token) {
                 throw new UnauthorizedException(" ");
             }
-            console.log('token received', token)
-
+            if (token.startsWith('Bearer ')) {
+                token = token.split('Bearer ')[1];
+            }
             if (!roles) {
                 return true;
             }
