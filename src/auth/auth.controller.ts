@@ -31,7 +31,7 @@ export class AuthController {
       // إنشاء التوكن
       const tokenResult = await this.authService.generateToken(dbUser);
 
-      res.cookie('token', tokenResult.token, { httpOnly: true });
+      res.cookie('token', tokenResult.token, { httpOnly: true, secure: true, sameSite: 'none' });
       // التوجيه للفرونت إند
       const frontendUrl = `${process.env.API_FRONT}/#/callback`;
       return res.redirect(frontendUrl);

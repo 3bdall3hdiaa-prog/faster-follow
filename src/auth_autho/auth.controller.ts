@@ -28,9 +28,8 @@ export class loginController {
 
     res.cookie('token', result.token, {
       httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-      maxAge: 24 * 60 * 60 * 1000,
+      secure: true,
+      sameSite: 'none',
     });
 
     return res.status(result.status).json({
