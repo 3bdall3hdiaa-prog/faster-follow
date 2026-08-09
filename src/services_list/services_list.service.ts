@@ -12,31 +12,40 @@ export class ServicesListService {
     @InjectModel('ManagePlatforms') private readonly managePlatform: Model<ManagePlatformsDocument>,
   ) { }
   async create(createServicesListDto: CreateServicesListDto, file: any) {
-    // const check = await this.servicesListModel.findOne({ title: createServicesListDto.title });
-    // if (check) throw new HttpException('title already exist', 404);
-    if (!createServicesListDto.provider || !createServicesListDto.services) throw new HttpException('provider is required', 404);
+    console.log(createServicesListDto)
+    if (!createServicesListDto) throw new HttpException('data is required', 404);
     const { provider, services } = createServicesListDto;
-    const addService = Promise.all(services.map(async (el: any) => {
-      await this.servicesListModel.create({
-        provider,
-        providerServiceId: el.service,
-        title: el.name,
-        price: Number(el.rate) * 1.2,
-        providerRate: el.rate,
-        min: el.min,
-        max: el.max,
-        platform: el.category,
-        refill: el.refill,
-      });
-    }))
-    await addService
+    if (services) {
+      const addService = Promise.all(services.map(async (el: any) => {
+        await this.servicesListModel.create({
+          provider,
+          providerServiceId: el.service,
+          title: el.name,
+          price: Number(el.rate) * 1.2,
+          providerRate: el.rate,
+          min: el.min,
+          max: el.max,
+          platform: el.category,
+          refill: el.refill,
+        });
+      }))
+      await addService
 
-
-    return { message: "added successfully", status: 200 }
+      return { message: "added successfully", status: 200 }
+    }
+    if (!services) {
+      const check = await this.servicesListModel.findOne({ providerServiceId: createServicesListDto.providerServiceId });
+      if (check) throw new HttpException('service already exist', 404);
+      let addService;
+      if (file) addService = { ...createServicesListDto, image: { url: file.url, public_id: file.public_id } }
+      else addService = { ...createServicesListDto };
+      await this.servicesListModel.create(addService);
+      return { message: "added successfully", status: 200 }
+    }
   }
 
   async findAll() {
-    const data = await this.servicesListModel.find().populate('provider', 'name');
+    const data = await this.servicesListModel.find().populate('provider');
     return data
   }
 
@@ -116,7 +125,7 @@ export class ServicesListService {
   }
   async getService(id: string) {
     if (!id) throw new HttpException("id not provided", 404);
-    const data = await this.servicesListModel.findById({ _id: id }).populate('provider', 'name');
+    const data = await this.servicesListModel.findById({ _id: id }).populate('provider');
     if (!data) throw new HttpException("service not found", 404);
 
     return data

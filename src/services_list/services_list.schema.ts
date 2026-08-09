@@ -52,7 +52,7 @@ export class ServicesList {
     @Prop()
     descriptionAr!: string
 
-    @Prop()
+    @Prop({ default: false })
     refill!: boolean
 
     @Prop({ required: false })

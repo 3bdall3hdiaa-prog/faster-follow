@@ -3,7 +3,10 @@ import { IsBoolean, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateServicesListDto {
     services!: any
-    image: any
+    @IsOptional()
+    image?: any
+    @IsOptional()
+    refill?: boolean
     @IsString()
     providerServiceId!: string;
     @IsString()

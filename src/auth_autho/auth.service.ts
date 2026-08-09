@@ -26,15 +26,15 @@ export class AuthService {
     if (!user) throw new HttpException("user not created", 404);
     const payload = {
       _id: user._id,
-      // هبعت الوظيفه بتاعت اليوزر في الباي لود
+      username: user.username,
       role: user.role,
+      email: user.email
     }
     const token = await this.jwtService.signAsync(payload, { secret: process.env.secret })
     if (!token) throw new HttpException("token not created", 404);
     return {
       status: 200,
       message: "user logged in",
-      user: user,
       token: token
     };
   }
@@ -43,14 +43,14 @@ export class AuthService {
     if (!username || !password) throw new HttpException(" يلزم ادخال الايميل والباسورد", 404);
     const user = await this.modell.findOne({ username });
     if (!user) throw new HttpException("المستخدم ليس موجود", 404);
-    const datareturnntouser = {
-      _id: user._id,
-      username: user.username,
-      role: user.role,
-      email: user.email,
-      is2FA: user.is2FA,
-      status: user.status
-    }
+    // const datareturnntouser = {
+    //   _id: user._id,
+    //   username: user.username,
+    //   role: user.role,
+    //   email: user.email,
+    //   is2FA: user.is2FA,
+    //   status: user.status
+    // }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) throw new HttpException("  كلمة السر غير صحيح", 404);
     if (user.status == 'inactive') {
@@ -59,30 +59,18 @@ export class AuthService {
     if (user.status == 'banned') {
       throw new HttpException("الحساب محظور", 404);
     }
-    // 2fa
-    if (user.is2FA === true) {
-      await axios.post(`https://api.fasterfollow.net/resetpassword`, { email: user.email });
-      return {
-        status: 200,
-        message: "2fa enabled",
-      }
-
-
-    }
-
     /////////
     const payload = {
       _id: user._id,
       username: user.username,
-      // هبعت الوظيفه بتاعت اليوزر في الباي لود
       role: user.role,
+      email: user.email
     }
     const token = await this.jwtService.signAsync(payload, { secret: process.env.secret })
     if (!token) throw new Error("user not found");
     return {
       status: 200,
       message: "user logged in",
-      user: datareturnntouser,
       token: token
     };
 

@@ -6,18 +6,38 @@ import { ThrottlerGuard, Throttle } from '@nestjs/throttler';
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
   @Post()
-  signup(@Body(new ValidationPipe()) createAuthDto: CreateAuthDto) {
-    return this.authService.signup(createAuthDto);
+  async signup(@Body(new ValidationPipe()) createAuthDto: CreateAuthDto, @Res() res: any) {
+    const result = await this.authService.signup(createAuthDto);
+    res.cookie('token', result.token, { httpOnly: true, secure: true, sameSite: 'none' });
+    return res.status(result.status).json({
+      status: result.status,
+      message: result.message,
+      success: true,
+    });
   }
 }
 
 @Controller('/signin')
 export class loginController {
   constructor(private readonly authService: AuthService) { }
+  // @Throttle({ default: { limit: 5, ttl: 50000 } })
   @Post()
-  @Throttle({ default: { limit: 5, ttl: 50000 } })
-  login(@Body(new ValidationPipe()) createAuthDto: CreateAuthDto) {
-    return this.authService.login(createAuthDto);
+  async login(@Body(new ValidationPipe()) createAuthDto: CreateAuthDto, @Res() res: any) {
+
+    const result = await this.authService.login(createAuthDto);
+
+    res.cookie('token', result.token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    return res.status(result.status).json({
+      status: result.status,
+      message: result.message,
+      success: true,
+    });
   }
 }
 

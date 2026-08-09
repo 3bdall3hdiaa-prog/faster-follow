@@ -13,18 +13,21 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 export class NewOrderService {
   constructor(@InjectModel('NewOrder') private readonly newOrderModel: Model<UserDocument>,
     @InjectModel('ManageProviders') private readonly providerModel: Model<ManageProvidersDocument>,
+    @InjectModel('ServicesList') private readonly serviceModel: Model<any>
   ) { }
-  async create(createNewOrderDto: CreateNewOrderDto) {
+  async create(createNewOrderDto: any) {
     try {
       // أولًا نحفظ الطلب في قاعدة البيانات بحالة مبدئية pending
       const newOrder = await this.newOrderModel.create({
         ...createNewOrderDto,
         status: 'pending',
       });
+      const service = await this.serviceModel.findById(createNewOrderDto.serviceId)
+      if (!service) {
+        throw new Error(`لم يتم العثور على الخدمة بالمعرف: ${createNewOrderDto.serviceId}`);
+      }
+      const provider = await this.providerModel.findById(newOrder.provider);
 
-      const provider = await this.providerModel.findOne({
-        name: newOrder.provider, // نفس الاسم اللي جاي من الفرونت
-      });
       if (!provider) {
         throw new Error(`لم يتم العثور على مزود بهذا الاسم: ${newOrder.provider}`);
       }
@@ -35,7 +38,7 @@ export class NewOrderService {
       const payload = new URLSearchParams();
       payload.append('key', apiKey); // ⚠️ استبدل بمفتاحك من الموقع
       payload.append('action', 'add');
-      payload.append('service', String(createNewOrderDto.selectedServiceId));
+      payload.append('service', String(service.providerServiceId)); // رقم الخدمة من الموقع
       payload.append('link', createNewOrderDto.link);
       payload.append('quantity', String(createNewOrderDto.quantity));
 
@@ -75,21 +78,21 @@ export class NewOrderService {
   async checkOrderStatus(orderId: string) {
     try {
       // نجيب الطلب من قاعدة البيانات
-      const order = await this.newOrderModel.findOne({ providerOrderId: orderId });
+      const order: any = await this.newOrderModel.findOne({ _id: orderId }).populate('provider').populate('serviceId');
       if (!order) throw new HttpException('الطلب غير موجود', 404);
 
       // نجيب المزود من قاعدة البيانات
-      const provider = await this.providerModel.findOne({ name: order.provider });
-      if (!provider) throw new HttpException('المزود غير موجود', 404);
+      // const provider = await this.providerModel.findOne({ name: order.provider });
+      // if (!provider) throw new HttpException('المزود غير موجود', 404);
 
       // إعداد البيانات
       const payload = new URLSearchParams();
-      payload.append('key', provider.apiKey);
+      payload.append('key', order.provider.apiKey);
       payload.append('action', 'status');
-      payload.append('order', order.providerOrderId.toString());
+      payload.append('order', order.providerOrderId);
 
       // نطلب حالة الطلب من المزود
-      const response = await axios.post(provider.apiEndpoint, payload);
+      const response = await axios.post(order.provider.apiEndpoint, payload);
 
       // لو رجع المزود حالة
       if (response.data.status) {
@@ -147,9 +150,9 @@ export class NewOrderService {
     try {
       console.log('🔥 Cron running... checking for pending/processing orders');
 
-      const pendingOrders = await this.newOrderModel.find({
+      const pendingOrders: any = await this.newOrderModel.find({
         status: { $in: ['pending', 'processing', 'in progress'] },
-      });
+      }).populate('provider');
 
       if (pendingOrders.length === 0) {
         console.log('ℹ️ No pending orders found');
@@ -157,7 +160,7 @@ export class NewOrderService {
       }
 
       for (const order of pendingOrders) {
-        const provider = await this.providerModel.findOne({ name: order.provider });
+        const provider = await this.providerModel.findById(order.provider?._id);
         if (!provider) {
           console.warn(`⚠️ Provider not found for order ${order._id}`);
           continue;
@@ -166,10 +169,10 @@ export class NewOrderService {
         const payload = new URLSearchParams();
         payload.append('key', provider.apiKey);
         payload.append('action', 'status');
-        payload.append('order', order.providerOrderId.toString());
+        payload.append('order', order.providerOrderId);
 
         const response = await axios.post(provider.apiEndpoint, payload);
-
+        console.log(response.data);
         if (response.data.status) {
           const newStatus = response.data.status.toLowerCase();
           await this.newOrderModel.findByIdAndUpdate(order._id, { status: newStatus });

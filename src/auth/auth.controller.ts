@@ -2,6 +2,8 @@
 import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
+import { RoleGuard } from 'src/user/guard/guard';
+import { role } from 'src/user/user.customdecoratoe';
 
 @Controller('auth')
 export class AuthController {
@@ -29,8 +31,9 @@ export class AuthController {
       // إنشاء التوكن
       const tokenResult = await this.authService.generateToken(dbUser);
 
+      res.cookie('token', tokenResult.token, { httpOnly: true });
       // التوجيه للفرونت إند
-      const frontendUrl = `${process.env.API_FRONT}/#/callback?token=${tokenResult.token}&user=${encodeURIComponent(JSON.stringify(tokenResult.user))}`;
+      const frontendUrl = `${process.env.API_FRONT}/#/callback`;
       return res.redirect(frontendUrl);
 
     } catch (error) {
@@ -38,4 +41,23 @@ export class AuthController {
       return res.redirect(`${process.env.API_FRONT}/#/login?error=auth_error`);
     }
   }
+
+  @Get('/me')
+  @role(['admin', 'client'])
+  @UseGuards(RoleGuard)
+  async me(@Req() req: any) {
+    const user: { _id: string, username: string, role: string } = req.user;
+    return user
+  }
+
+  @Get('/logout')
+  async logout(@Res() res: any) {
+    res.clearCookie('token');
+    return res.status(200).json({
+      message: 'Logout successful',
+      success: true,
+    });
+  }
+
+
 }

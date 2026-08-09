@@ -58,6 +58,8 @@ export class ServicesListController {
   }
 
   @Post('refill')
+  @role(['admin', 'client'])
+  @UseGuards(RoleGuard)
   refill(@Body() data: { order: string, key: string, apiEndpoint: string }) {
     return this.servicesListService.refill(data)
   }

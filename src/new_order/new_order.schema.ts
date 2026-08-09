@@ -10,8 +10,7 @@ export type UserDocument = HydratedDocument<User>;
 export class User {
     @Prop()
     selectedCategory: string;
-    @Prop({ default: () => Math.floor(1000 + Math.random() * 9000) })
-    order_number: string
+
     @Prop({ required: true, type: Types.ObjectId, ref: 'ServicesList' })
     serviceId: Types.ObjectId;
     @IsUrl()
