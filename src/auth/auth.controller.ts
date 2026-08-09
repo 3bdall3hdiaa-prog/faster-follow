@@ -52,7 +52,7 @@ export class AuthController {
 
   @Get('/logout')
   async logout(@Res() res: any) {
-    res.clearCookie('token');
+    res.clearCookie('token', { httpOnly: true, secure: true, sameSite: 'none' });
     return res.status(200).json({
       message: 'Logout successful',
       success: true,
