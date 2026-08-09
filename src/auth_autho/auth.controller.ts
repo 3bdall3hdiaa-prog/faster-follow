@@ -1,4 +1,4 @@
-import { Controller, Post, Body, ValidationPipe, Patch, Get, Res, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, ValidationPipe, Patch, Get, Res, UseGuards, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { ThrottlerGuard, Throttle } from '@nestjs/throttler';
@@ -22,10 +22,13 @@ export class loginController {
   constructor(private readonly authService: AuthService) { }
   // @Throttle({ default: { limit: 5, ttl: 50000 } })
   @Post()
-  async login(@Body(new ValidationPipe()) createAuthDto: CreateAuthDto, @Res() res: any) {
+  async login(@Body(new ValidationPipe()) createAuthDto: CreateAuthDto, @Res() res: any, @Req() req: any) {
 
     const result = await this.authService.login(createAuthDto);
-
+    console.log('========== SIGNIN ==========');
+    console.log('Origin:', req.headers.origin);
+    console.log('User-Agent:', req.headers['user-agent']);
+    console.log('Set-Cookie will be sent');
     res.cookie('token', result.token, {
       httpOnly: true,
       secure: true,
