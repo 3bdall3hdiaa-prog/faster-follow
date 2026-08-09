@@ -31,7 +31,7 @@ export class loginController {
       secure: true,
       sameSite: 'none',
     });
-
+    console.log(result)
     return res.status(result.status).json({
       status: result.status,
       message: result.message,
