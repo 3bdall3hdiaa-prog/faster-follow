@@ -16,6 +16,7 @@ export class AuthController {
       status: result.status,
       message: result.message,
       success: true,
+      token: result.token
     });
   }
 }
