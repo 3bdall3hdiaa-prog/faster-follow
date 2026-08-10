@@ -7,7 +7,7 @@ export type CoponsDocument = HydratedDocument<Copons>;
 export class Copons {
     @Prop()
     amount: string;
-    @Prop({ unique: true })
+    @Prop({ index: { unique: true } })
     code: string;
     @Prop({ default: false })
     used: boolean

@@ -5,7 +5,7 @@ export type ManageProvidersDocument = HydratedDocument<ManageProviders>;
 
 @Schema()
 export class ManageProviders {
-    @Prop()
+    @Prop({ index: { unique: true } })
     name: string;
 
     @Prop()

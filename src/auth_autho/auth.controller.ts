@@ -9,7 +9,7 @@ export class AuthController {
   async signup(@Body(new ValidationPipe()) createAuthDto: CreateAuthDto, @Res() res: any) {
     const result = await this.authService.signup(createAuthDto);
     res.cookie('token', result.token, {
-      httpOnly: true, secure: true, sameSite: 'none', path: '/',
+      httpOnly: true, secure: false, sameSite: 'none', path: '/',
       maxAge: 24 * 60 * 60 * 1000,
     });
     return res.status(result.status).json({
@@ -24,15 +24,15 @@ export class AuthController {
 @Controller('/signin')
 export class loginController {
   constructor(private readonly authService: AuthService) { }
-  // @Throttle({ default: { limit: 5, ttl: 50000 } })
   @Post()
+  @Throttle({ default: { limit: 5, ttl: 50000 } })
   async login(@Body(new ValidationPipe()) createAuthDto: CreateAuthDto, @Res() res: any) {
 
     const result = await this.authService.login(createAuthDto);
 
     res.cookie('token', result.token, {
       httpOnly: true,
-      secure: true,
+      secure: false,
       sameSite: 'none', path: '/',
       maxAge: 24 * 60 * 60 * 1000,
     });

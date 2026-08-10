@@ -11,7 +11,8 @@ export class ManageplatformsService {
   constructor(@InjectModel('ManagePlatforms') private readonly userModel: Model<ManagePlatformsDocument>,
     @Inject('CLOUDINARY') private cloudinary: any
   ) { }
-  async create(createManageplatformDto: CreateManageplatformDto, file: any) {
+  async create(createManageplatformDto: any, file: any) {
+    const check = await this.userModel.findOne({ name: createManageplatformDto.name })
     let data = createManageplatformDto
     if (file) {
       data = {

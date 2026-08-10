@@ -12,7 +12,7 @@ export class ManagecoponsController {
   @Post()
   @role(['admin'])
   @UseGuards(RoleGuard)
-  create(@Body() createManagecoponDto: CreateManagecoponDto) {
+  create(@Body() createManagecoponDto: { code: string, amount: number, used: boolean }) {
     return this.managecoponsService.create(createManagecoponDto);
   }
 

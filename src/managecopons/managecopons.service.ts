@@ -16,7 +16,9 @@ export class ManagecoponsService {
     @InjectModel('auth_authos') private data: Model<UserDocument>) { }
 
 
-  async create(createManagecoponDto: CreateManagecoponDto) {
+  async create(createManagecoponDto: { code: string, amount: number, used: boolean }) {
+    const check = await this.copon.findOne({ code: createManagecoponDto.code });
+    if (check) throw new HttpException("الكوبون موجود بالفعل", 404);
     const createdManagecopon = new this.copon(createManagecoponDto);
     return await createdManagecopon.save();
   }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { CreateManageProviderDto } from './dto/create-manage-provider.dto';
 import { UpdateManageProviderDto } from './dto/update-manage-provider.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -8,6 +8,10 @@ import { ManageProvidersDocument } from './schema';
 export class ManageProvidersService {
   constructor(@InjectModel('ManageProviders') private readonly userModel: Model<ManageProvidersDocument>) { }
   async create(createManageProviderDto: CreateManageProviderDto) {
+    const check = await this.userModel.findOne({ name: createManageProviderDto.name });
+    if (check) {
+      throw new HttpException('provider already exist', 403);
+    }
     const createdManageProvider = await this.userModel.create(createManageProviderDto);
     if (!createdManageProvider) {
       return null;

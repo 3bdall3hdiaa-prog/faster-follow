@@ -5,7 +5,7 @@ export type ManagePlatformsDocument = HydratedDocument<ManagePlatforms>;
 export class ManagePlatforms {
     @Prop({ unique: true, required: true })
     slug: string;
-    @Prop({ required: true, unique: true })
+    @Prop({ required: true, index: { unique: true } })
     name: string;
     @Prop({ type: Object, required: false })
     image: {

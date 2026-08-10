@@ -10,6 +10,8 @@ export class ManageUsersService {
   constructor(@InjectModel('auth_authos') private readonly userModel: Model<UserDocument>) { }
   async create(createManageUserDto: CreateManageUserDto) {
     const { username, role, email } = createManageUserDto
+    const check = await this.userModel.findOne({ username })
+    if (check) throw new HttpException("user already exist", 404)
     const hashpass = await bcrypt.hash(createManageUserDto.password, 10)
     const data = await this.userModel.create({
       username,

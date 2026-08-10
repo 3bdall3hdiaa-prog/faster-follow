@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Res } from '@nestjs/common';
 import { ResetpasswordService } from './resetpassword.service';
 import { CreateResetpasswordDto } from './dto/create-resetpassword.dto';
 import { ChangePassword } from './dto/create-resetpassword.dto';
@@ -10,14 +10,25 @@ export class ResetpasswordController {
   constructor(private readonly resetpasswordService: ResetpasswordService) { }
 
   @Post()
-  create(@Body() createResetpasswordDto: CreateResetpasswordDto) {
+  create(@Body() createResetpasswordDto: { email: string }) {
     return this.resetpasswordService.create(createResetpasswordDto);
   }
 
 
   @Post('verify')
-  verify(@Body() code: any) {
-    return this.resetpasswordService.verifyCode(code);
+  async verify(@Body() code: any, @Res() res: any) {
+    const result = await this.resetpasswordService.verifyCode(code);
+    res.cookie('token', result.token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'none',
+      path: '/',
+      maxAge: 24 * 60 * 60 * 1000,
+    })
+    return {
+      message: result.message,
+      token: result.token
+    }
   }
 
   @Post('change-password')

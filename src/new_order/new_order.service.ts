@@ -17,15 +17,26 @@ export class NewOrderService {
   ) { }
   async create(createNewOrderDto: any) {
     try {
-      // أولًا نحفظ الطلب في قاعدة البيانات بحالة مبدئية pending
-      const newOrder = await this.newOrderModel.create({
-        ...createNewOrderDto,
-        status: 'pending',
-      });
+
       const service = await this.serviceModel.findById(createNewOrderDto.serviceId)
       if (!service) {
         throw new Error(`لم يتم العثور على الخدمة بالمعرف: ${createNewOrderDto.serviceId}`);
       }
+
+      let totalCost = 0;
+      totalCost = (createNewOrderDto.quantity / 1000) * service.price
+      if (createNewOrderDto.quantity === 2000 && service.discount_for_2000) totalCost = service.discount_for_2000 * totalCost
+      if (createNewOrderDto.quantity === 3000 && service.discount_for_3000) totalCost = service.discount_for_3000 * totalCost
+      if (createNewOrderDto.quantity === 4000 && service.discount_for_4000) totalCost = service.discount_for_4000 * totalCost
+      if (createNewOrderDto.quantity > 4000 && createNewOrderDto.quantity < 100000 && createNewOrderDto.quantity % 1000 === 0 && service.discount_for_greater_than_4000) totalCost = service.discount_for_greater_than_4000 * totalCost
+      if (createNewOrderDto.quantity >= 100000 && createNewOrderDto.quantity % 1000 === 0 && service.discount_for_greater_than_100000) totalCost = service.discount_for_greater_than_100000 * totalCost
+      // أولًا نحفظ الطلب في قاعدة البيانات بحالة مبدئية pending
+      const newOrder = await this.newOrderModel.create({
+        ...createNewOrderDto,
+        totalCost,
+        status: 'pending',
+      });
+
       const provider = await this.providerModel.findById(newOrder.provider);
 
       if (!provider) {
@@ -55,6 +66,7 @@ export class NewOrderService {
 
 
         return {
+          totalCost,
           success: true,
           message: 'تم إنشاء الطلب بنجاح وإرساله إلى المزود.',
           providerOrderId: response.data.order,

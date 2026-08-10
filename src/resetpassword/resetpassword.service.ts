@@ -16,24 +16,43 @@ export class ResetpasswordService {
     private jwtService: JwtService) { }
 
 
-  async create(createResetpasswordDto: CreateResetpasswordDto) {
-    const { email } = createResetpasswordDto
-    const user = await this.data.findOne({ email })
-    if (!user) throw new HttpException("user not found", 404);
-    const code = Math.floor(Math.random() * 1000000).toString()
-    const addcode = await this.userModel.create({ verificationCode: code, email: user.email })
-    if (!addcode) throw new HttpException("code not added", 404);
-    //send code to user email
+  async create(createResetpasswordDto: { email: string }) {
+
+    const { email } = createResetpasswordDto;
+
+
+    const user = await this.data.findOne({ email });
+
+
+    if (!user) {
+      throw new HttpException("user not found", 404);
+    }
+
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+
+    const addcode = await this.userModel.create({
+      verificationCode: code,
+      email: user.email,
+    });
+
+
+    if (!addcode) {
+      throw new HttpException("code not added", 404);
+    }
+
+
     await this.mailerService.sendMail({
-      from: `fasterfollowers.com<${process.env.EMAIL_USERNAME}>`,
+      from: `fasterfollowers.com <${process.env.EMAIL_USERNAME}>`,
       to: user.email,
-      subject: 'Code Verification',
+      subject: "Code Verification",
       text: `Your code is ${code}`,
     });
 
+
     return {
       message: "Code sent successfully",
-    }
+    };
   }
   async verifyCode(code: any) {
     const { verificationCode } = code

@@ -32,7 +32,7 @@ export class AuthController {
       const tokenResult = await this.authService.generateToken(dbUser);
 
       res.cookie('token', tokenResult.token, {
-        httpOnly: true, secure: true, sameSite: 'none', path: '/',
+        httpOnly: true, secure: false, sameSite: 'none', path: '/',
         maxAge: 24 * 60 * 60 * 1000,
       });
       // التوجيه للفرونت إند
@@ -56,7 +56,7 @@ export class AuthController {
   @Get('/logout')
   async logout(@Res() res: any) {
     res.clearCookie('token', {
-      httpOnly: true, secure: true, sameSite: 'none', path: '/',
+      httpOnly: true, secure: false, sameSite: 'none', path: '/',
       maxAge: 24 * 60 * 60 * 1000,
     });
     return res.status(200).json({

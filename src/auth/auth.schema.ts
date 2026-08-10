@@ -6,20 +6,14 @@ export type UserDocument = User & Document;
 
 @Schema({ collection: 'auth_authos', timestamps: true })
 export class User {
-    @Prop({ required: true, unique: true })
+    @Prop({ required: true, unique: true, index: true })
     email: string;
 
-    @Prop()
+    @Prop({ index: true })
     username: string;
 
     @Prop()
     name: string;
-
-    @Prop()
-    firstName: string;
-
-    @Prop()
-    lastName: string;
 
     @Prop()
     picture: string;
@@ -33,16 +27,10 @@ export class User {
     @Prop({ unique: true, sparse: true })
     googleId: string;
 
-    @Prop()
-    accessToken: string;
-
-    @Prop()
-    refreshToken: string;
-
     @Prop({ default: false })
     emailVerified: boolean;
 
-    @Prop({ default: 'google' })
+    @Prop({ default: 'local' })
     provider: string;
     // @Prop()
     // balance: number;

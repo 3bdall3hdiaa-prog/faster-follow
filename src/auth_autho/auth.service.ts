@@ -22,7 +22,7 @@ export class AuthService {
     if (check_email) throw new HttpException("  الايميل موجود بالفعل", 404);
     if (!username || !password) throw new HttpException("    اسم المستخدم وكلمة السر مطلوبة", 404);
     const hashpassword = await bcrypt.hash(password, 10)
-    const user = await this.modell.create({ username, email, password: hashpassword, role: "client" });
+    const user = await this.modell.create({ username, email, password: hashpassword, role: "client", provider: "local" });
     if (!user) throw new HttpException("user not created", 404);
     const payload = {
       _id: user._id,
