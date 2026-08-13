@@ -34,10 +34,4 @@ export class ManageUsersController {
     return this.manageUsersService.update(id, updateManageUserDto);
   }
 
-  // @Delete(':id')
-  // @Roles(["admin"])
-  // @UseGuards(AuthGuard)
-  // remove(@Param('id') id: string) {
-  //   return this.manageUsersService.remove(+id);
-  // }
 }

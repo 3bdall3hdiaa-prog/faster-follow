@@ -25,11 +25,10 @@ export class NewOrderService {
 
       let totalCost = 0;
       totalCost = (createNewOrderDto.quantity / 1000) * service.price
-      if (createNewOrderDto.quantity === 2000 && service.discount_for_2000) totalCost = service.discount_for_2000 * totalCost
-      if (createNewOrderDto.quantity === 3000 && service.discount_for_3000) totalCost = service.discount_for_3000 * totalCost
-      if (createNewOrderDto.quantity === 4000 && service.discount_for_4000) totalCost = service.discount_for_4000 * totalCost
-      if (createNewOrderDto.quantity > 4000 && createNewOrderDto.quantity < 100000 && createNewOrderDto.quantity % 1000 === 0 && service.discount_for_greater_than_4000) totalCost = service.discount_for_greater_than_4000 * totalCost
-      if (createNewOrderDto.quantity >= 100000 && createNewOrderDto.quantity % 1000 === 0 && service.discount_for_greater_than_100000) totalCost = service.discount_for_greater_than_100000 * totalCost
+      const disount = service.discounts.find((el: any) => el.from <= createNewOrderDto.quantity && el.to >= createNewOrderDto.quantity)
+      if (disount) {
+        totalCost = totalCost * disount.discount
+      }
       // أولًا نحفظ الطلب في قاعدة البيانات بحالة مبدئية pending
       const newOrder = await this.newOrderModel.create({
         ...createNewOrderDto,
@@ -133,9 +132,16 @@ export class NewOrderService {
   }
 
   async findOne(id: string) {
-    const data = await this.newOrderModel.find({ id_user: id }).populate('provider').populate('serviceId');
-    if (!data || data.length === 0) throw new HttpException(" not found", 404);
-    return data
+
+    const data = await this.newOrderModel
+      .find({ id_user: id })
+      .populate('provider')
+      .populate('serviceId')
+      .sort({ createdAt: -1 }); // الأحدث أولًا
+
+
+
+    return data;
   }
 
   async update(id: string, updateNewOrderDto: UpdateNewOrderDto) {

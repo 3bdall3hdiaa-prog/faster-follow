@@ -25,17 +25,14 @@ export class AuthController {
         return res.redirect(`${process.env.API_FRONT}/#/login?error=auth_failed`);
       }
 
-      // حفظ المستخدم في الداتابيز
       const dbUser = await this.authService.saveGoogleUser(user);
 
-      // إنشاء التوكن
       const tokenResult = await this.authService.generateToken(dbUser);
 
       res.cookie('token', tokenResult.token, {
         httpOnly: true, secure: false, sameSite: 'none', path: '/',
         maxAge: 24 * 60 * 60 * 1000,
       });
-      // التوجيه للفرونت إند
       const frontendUrl = `${process.env.API_FRONT}/#/callback`;
       return res.redirect(frontendUrl);
 

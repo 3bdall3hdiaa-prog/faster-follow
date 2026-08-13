@@ -5,7 +5,6 @@ import { ServicesListDocument } from './services_list.schema';
 import axios from 'axios';
 import { ManagePlatformsDocument } from 'src/manageplatforms/schema';
 import { CreateServicesListDto } from './dto/create-services_list.dto';
-import { UpdateServicesListDto } from './dto/update-services_list.dto';
 @Injectable()
 export class ServicesListService {
   constructor(@InjectModel('ServicesList') private readonly servicesListModel: Model<ServicesListDocument>, @Inject('CLOUDINARY') private cloudinary: any,
@@ -53,28 +52,37 @@ export class ServicesListService {
 
   async update(id: string, updateServicesListDto: any, file: any) {
     const check = await this.servicesListModel.findById(id);
-    if (!check) throw new HttpException("user not found", 404);
+
+    if (!check) {
+      throw new HttpException("service not found", 404);
+    }
+
     let form = { ...updateServicesListDto };
+
     if (file) {
-      form = { ...updateServicesListDto, image: { url: file.url, public_id: file.public_id } }
+      form.image = {
+        url: file.url,
+        public_id: file.public_id,
+      };
     }
-    if (updateServicesListDto.discount_for_2000) {
-      form.discount_for_2000 = (100 - updateServicesListDto.discount_for_2000) / 100
+
+    // تحويل الخصومات إلى معامل
+    const discounts = JSON.parse(updateServicesListDto.discounts);
+    if (Array.isArray(discounts)) {
+      form.discounts = discounts.map((item: any) => ({
+        from: Number(item.from),
+        to: Number(item.to),
+        discount: (100 - Number(item.discount)) / 100,
+      }));
     }
-    if (updateServicesListDto.discount_for_3000) {
-      form.discount_for_3000 = (100 - updateServicesListDto.discount_for_3000) / 100
-    }
-    if (updateServicesListDto.discount_for_4000) {
-      form.discount_for_4000 = (100 - updateServicesListDto.discount_for_4000) / 100
-    }
-    if (updateServicesListDto.discount_for_greater_than_4000) {
-      form.discount_for_greater_than_4000 = (100 - updateServicesListDto.discount_for_greater_than_4000) / 100
-    }
-    if (updateServicesListDto.discount_for_greater_than_100000) {
-      form.discount_for_greater_than_100000 = (100 - updateServicesListDto.discount_for_greater_than_100000) / 100
-    }
-    const update = await this.servicesListModel.findOneAndUpdate({ _id: id }, form, { new: true });
-    return update
+
+    const update = await this.servicesListModel.findOneAndUpdate(
+      { _id: id },
+      form,
+      { new: true }
+    );
+
+    return update;
   }
 
   async remove(id: string) {

@@ -37,11 +37,9 @@ export class AuthService {
     );
   }
 
-  // دالة حفظ اليوزر فقط
   async saveGoogleUser(googleUser: any): Promise<IUser> {
     const { googleId, email, name, picture, access_token, email_verified } = googleUser;
 
-    // شوف إذا اليوزر موجود
     let user = await this.userModel.findOne({
       $or: [
         { googleId: googleId },
@@ -50,14 +48,12 @@ export class AuthService {
     });
 
     if (user) {
-      // update اليوزر الموجود
       user.name = name;
       user.picture = picture;
       user.accessToken = access_token;
       user.emailVerified = email_verified;
       return user.save();
     } else {
-      // create يوزر جديد
       const newUser = new this.userModel({
         googleId,
         email,

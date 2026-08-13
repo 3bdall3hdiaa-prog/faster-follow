@@ -55,16 +55,21 @@ export class ServicesList {
     @Prop({ default: false })
     refill!: boolean
 
-    @Prop({ required: false })
-    discount_for_2000!: number
-    @Prop({ required: false })
-    discount_for_3000!: number
-    @Prop({ required: false })
-    discount_for_4000!: number
-    @Prop({ required: false })
-    discount_for_greater_than_4000!: number
-    @Prop({ required: false })
-    discount_for_greater_than_100000!: number
+    @Prop({
+        type: [
+            {
+                from: { type: Number },
+                to: { type: Number },
+                discount: { type: Number },
+            },
+        ],
+        default: [],
+    })
+    discounts!: {
+        from: number;
+        to: number;
+        discount: number;
+    }[];
 
 }
 

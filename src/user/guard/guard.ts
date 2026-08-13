@@ -30,12 +30,10 @@ export class RoleGuard implements CanActivate {
             if (!payload) {
                 throw new HttpException("can't find payload", 403);
             }
-            // بقولوا لو الوظيفه ادمن عدي الجارد علطول
-            if (payload._id && payload.role === 'admin') { // لو في ايدي في الباي لود اعمل الكلام ده
+            if (payload._id && payload.role === 'admin') {
                 request['user'] = payload;// هنا ببعت الباي لود في الريكويست بعمل اوبجيكت اسمه يوزر في الريكويست وجوا اوبجيكت الباي لود
                 return true;
             }
-            //ابعت ايرور ولو مفيش وظيفه مبعوته ابعت ايرورdecorator لو في وظيفه مبعوته والوظيفه دي مش موجوده في ال 
             if (
                 !payload.role ||
                 payload.role === '' ||
@@ -43,8 +41,7 @@ export class RoleGuard implements CanActivate {
             ) {
                 throw new HttpException("not allowed", 403);
             }
-            // 💡 We're assigning the payload to the request object here
-            // so that we can access it in our route handlers
+
             request['user'] = payload;
 
 
