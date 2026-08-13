@@ -10,7 +10,7 @@ export class ServicesListService {
   constructor(@InjectModel('ServicesList') private readonly servicesListModel: Model<ServicesListDocument>, @Inject('CLOUDINARY') private cloudinary: any,
     @InjectModel('ManagePlatforms') private readonly managePlatform: Model<ManagePlatformsDocument>,
   ) { }
-  async create(createServicesListDto: CreateServicesListDto, file: any) {
+  async create(createServicesListDto: any, file: any) {
     console.log(createServicesListDto)
     if (!createServicesListDto) throw new HttpException('data is required', 404);
     const { provider, services } = createServicesListDto;
@@ -38,6 +38,14 @@ export class ServicesListService {
       let addService;
       if (file) addService = { ...createServicesListDto, image: { url: file.url, public_id: file.public_id } }
       else addService = { ...createServicesListDto };
+      const discounts = JSON.parse(createServicesListDto.discounts);
+      if (Array.isArray(discounts)) {
+        addService.discounts = discounts.map((item: any) => ({
+          from: Number(item.from),
+          to: Number(item.to),
+          discount: Number(item.discount),
+        }));
+      }
       await this.servicesListModel.create(addService);
       return { message: "added successfully", status: 200 }
     }
@@ -72,7 +80,7 @@ export class ServicesListService {
       form.discounts = discounts.map((item: any) => ({
         from: Number(item.from),
         to: Number(item.to),
-        discount: (100 - Number(item.discount)) / 100,
+        discount: Number(item.discount),
       }));
     }
 

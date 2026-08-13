@@ -14,7 +14,7 @@ export class ServicesListController {
   @role(['admin'])
   @UseGuards(RoleGuard)
   @UseInterceptors(FileInterceptor('file'))
-  async create(@Body() createServicesListDto: CreateServicesListDto, @UploadedFile() file: any) {
+  async create(@Body() createServicesListDto: any, @UploadedFile() file: any) {
     let getFile
     if (file) getFile = await this.cloudinaryService.uploadFile(file);
     return this.servicesListService.create(createServicesListDto, getFile);

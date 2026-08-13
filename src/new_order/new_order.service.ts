@@ -27,7 +27,7 @@ export class NewOrderService {
       totalCost = (createNewOrderDto.quantity / 1000) * service.price
       const disount = service.discounts.find((el: any) => el.from <= createNewOrderDto.quantity && el.to >= createNewOrderDto.quantity)
       if (disount) {
-        totalCost = totalCost * disount.discount
+        totalCost = totalCost * ((100 - disount.discount) / 100)
       }
       // أولًا نحفظ الطلب في قاعدة البيانات بحالة مبدئية pending
       const newOrder = await this.newOrderModel.create({
