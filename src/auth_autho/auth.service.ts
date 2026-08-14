@@ -19,7 +19,9 @@ export class AuthService {
   async signup(createAuthDto: CreateAuthDto) {
     const { username, email, password } = createAuthDto;
     const check = await this.modell.findOne({ username })
-    if (check) throw new HttpException("  المستخدم موجود بالفعل", 404);
+    if (check) throw new HttpException("  هذا الاسم موجود بالفعل", 404);
+    const checkEmail = await this.modell.findOne({ email })
+    if (checkEmail) throw new HttpException("  الايميل موجود بالفعل", 404);
     if (!username || !password) throw new HttpException("    اسم المستخدم وكلمة السر مطلوبة", 404);
     const hashpassword = await bcrypt.hash(password, 10)
     const code = Math.floor(100000 + Math.random() * 900000).toString();
