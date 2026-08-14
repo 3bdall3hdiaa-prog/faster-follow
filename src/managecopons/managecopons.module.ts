@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { CoponsSchema } from './copons.schema';
 import { PaymentSchema } from '../pay-pal/pay-pal.shema';
 import { NotificationSchema } from '../notification/motification.schema';
-import { UserSchema } from 'src/auth_autho/auth.schema';
+import { UserSchema } from 'src/auth/auth.schema';
 import { RoleGuard } from 'src/user/guard/guard';
 import { JwtModule } from '@nestjs/jwt';
 @Module({

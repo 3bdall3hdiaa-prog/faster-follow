@@ -9,7 +9,7 @@ export class BalanceUsers {
     username: string;
 
     @Prop()
-    amount: number; // أو number إذا تقدر تغيره
+    amount: number;
 
 
 

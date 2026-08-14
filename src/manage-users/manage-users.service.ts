@@ -2,7 +2,7 @@ import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { CreateManageUserDto } from './dto/create-manage-user.dto';
 import { UpdateManageUserDto } from './dto/update-manage-user.dto';
 import { Model } from 'mongoose';
-import { UserDocument } from 'src/auth_autho/auth.schema';
+import { UserDocument } from 'src/auth/auth.schema';
 import * as bcrypt from 'bcrypt'
 import { InjectModel } from '@nestjs/mongoose';
 @Injectable()
@@ -18,14 +18,20 @@ export class ManageUsersService {
       role,
       email,
       password: hashpass,
+      provider: "local",
+      emailVerified: true
     })
 
     return data;
   }
 
   async getallusers() {
-    const data = await this.userModel.find({ emailVerified: true });
-    return data
+    const data = await this.userModel.find({
+      $or: [
+        { emailVerified: true },
+        { provider: "google" }
+      ]
+    }); return data
   }
 
   findOne(id: number) {
