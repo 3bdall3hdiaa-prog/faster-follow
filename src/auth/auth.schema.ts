@@ -38,6 +38,12 @@ export class User {
     password: string; // لو هتسجل دخول عادي
     @Prop({ default: 'active' })
     status: string;
+    @Prop({ type: Object, default: {} })
+    otp!: {
+        code: number,
+        expiry: Date,
+
+    }
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

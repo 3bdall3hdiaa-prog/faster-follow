@@ -1,22 +1,33 @@
 import { Controller, Post, Body, ValidationPipe, Patch, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { ThrottlerGuard, Throttle } from '@nestjs/throttler';
+import { Throttle } from '@nestjs/throttler';
 @Controller('/signup')
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
   @Post()
   async signup(@Body(new ValidationPipe()) createAuthDto: CreateAuthDto, @Res() res: any) {
     const result = await this.authService.signup(createAuthDto);
-    res.cookie('token', result.token, {
-      httpOnly: true, secure: false, sameSite: 'none', path: '/',
-      maxAge: 24 * 60 * 60 * 1000,
-    });
+
     return res.status(result.status).json({
       status: result.status,
       message: result.message,
       success: true,
-      token: result.token
+    });
+  }
+
+  @Post("/verifyOtp")
+  async verify(@Body() data: any, @Res() res: any) {
+    const result = await this.authService.verifyOtp(data);
+    res.cookie('token', result.token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax'
+    })
+    return res.status(result.status).json({
+      status: result.status,
+      message: result.message,
+      success: true,
     });
   }
 }
@@ -32,34 +43,15 @@ export class loginController {
 
     res.cookie('token', result.token, {
       httpOnly: true,
-      secure: false,
-      sameSite: 'none', path: '/',
-      maxAge: 24 * 60 * 60 * 1000,
+      secure: true,
+      sameSite: 'lax',
     });
     return res.status(result.status).json({
       status: result.status,
       message: result.message,
       success: true,
-      token: result.token
     });
   }
 }
 
-
-
-
-
-@Controller('2FA')
-export class Is2FAController {
-  constructor(private readonly authService: AuthService) { }
-  @Patch()
-  update(@Body() createAuthDto: any) {
-    return this.authService.update2fa(createAuthDto);
-  }
-
-  @Post("verify2fa")
-  verify(@Body() code: any) {
-    return this.authService.verify2fa(code);
-  }
-}
 

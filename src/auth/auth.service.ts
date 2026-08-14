@@ -61,7 +61,7 @@ export class AuthService {
         username: email.split('@')[0],
         picture,
         accessToken: access_token,
-        emailVerified: email_verified,
+        emailVerified: true,
         provider: 'google',
         balance: 0,
         role: 'client'

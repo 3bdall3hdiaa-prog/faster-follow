@@ -24,7 +24,7 @@ export class ManageUsersService {
   }
 
   async getallusers() {
-    const data = await this.userModel.find({});
+    const data = await this.userModel.find({ emailVerified: true });
     return data
   }
 
