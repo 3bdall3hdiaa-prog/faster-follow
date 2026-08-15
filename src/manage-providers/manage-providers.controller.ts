@@ -25,7 +25,6 @@ export class ManageProvidersController {
 
 
 
-
   @Put(':id')
   @role(["admin"])
   @UseGuards(RoleGuard)
