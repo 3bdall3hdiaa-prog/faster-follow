@@ -1,39 +1,20 @@
 import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { ServicesListDocument } from './services_list.schema';
 import axios from 'axios';
 import { ManagePlatformsDocument } from 'src/manageplatforms/schema';
-import { CreateServicesListDto } from './dto/create-services_list.dto';
 @Injectable()
 export class ServicesListService {
   constructor(@InjectModel('ServicesList') private readonly servicesListModel: Model<ServicesListDocument>, @Inject('CLOUDINARY') private cloudinary: any,
     @InjectModel('ManagePlatforms') private readonly managePlatform: Model<ManagePlatformsDocument>,
   ) { }
   async create(createServicesListDto: any, file: any) {
-    console.log(createServicesListDto)
     if (!createServicesListDto) throw new HttpException('data is required', 404);
     const { provider, services } = createServicesListDto;
-    if (services) {
-      const addService = Promise.all(services.map(async (el: any) => {
-        await this.servicesListModel.create({
-          provider,
-          providerServiceId: el.service,
-          title: el.name,
-          price: Number(el.rate) * 1.2,
-          providerRate: el.rate,
-          min: el.min,
-          max: el.max,
-          platform: el.category,
-          refill: el.refill,
-        });
-      }))
-      await addService
-
-      return { message: "added successfully", status: 200 }
-    }
     if (!services) {
-      const check = await this.servicesListModel.findOne({ providerServiceId: createServicesListDto.providerServiceId });
+      if (!mongoose.Types.ObjectId.isValid(provider)) throw new HttpException('invalid provider', 404);
+      const check = await this.servicesListModel.findOne({ provider, providerServiceId: createServicesListDto.providerServiceId });
       if (check) throw new HttpException('service already exist', 404);
       let addService;
       if (file) addService = { ...createServicesListDto, image: { url: file.url, public_id: file.public_id } }
@@ -45,11 +26,32 @@ export class ServicesListService {
           to: Number(item.to),
           discount: Number(item.discount),
         }));
+
+        await this.servicesListModel.create(addService);
+        return { message: "added successfully", status: 200 }
       }
-      await this.servicesListModel.create(addService);
-      return { message: "added successfully", status: 200 }
     }
+
+    const addService = Promise.all(services.map(async (el: any) => {
+      await this.servicesListModel.create({
+        provider,
+        providerServiceId: el.service,
+        title: el.name,
+        price: Number(el.rate) * 1.2,
+        providerRate: el.rate,
+        min: el.min,
+        max: el.max,
+        platform: el.category,
+        refill: el.refill,
+      });
+    }))
+    await addService
+
+    return { message: "added successfully", status: 200 }
   }
+
+
+
 
   async findAll() {
     const data = await this.servicesListModel.find().populate('provider');
@@ -102,20 +104,37 @@ export class ServicesListService {
     await this.servicesListModel.findOneAndDelete({ _id: id });
     return { message: "deleted successfully", status: 200 }
   }
-  async getdata(query: { key: string, apiEndpoint: string, page: number }) {
-    const data = await axios.post(query.apiEndpoint, {
-      key: `${query.key}`,
-      action: "services"
+  async getdata(query: {
+    key: string;
+    apiEndpoint: string;
+    page: number;
+    search: string;
+  }) {
+    const res = await axios.post(query.apiEndpoint, {
+      key: query.key,
+      action: 'services',
     });
-    let limit = 50;
-    let p = query.page - 1;
-    let skip = p * limit;
-    const length = Math.ceil(data.data.length / limit);
-    const result = data.data.slice(skip, (p + 1) * limit);
+
+    let getData = res.data;
+
+    if (query.search) {
+      getData = res.data.filter((el: any) =>
+        el.title?.includes(query.search),
+      );
+    }
+
+    const limit = 50;
+    const p = query.page - 1;
+    const skip = p * limit;
+
+    const length = Math.ceil(getData.length / limit);
+
+    const result = getData.slice(skip, skip + limit);
+
     return {
       data: result,
-      length: length
-    }
+      length,
+    };
   }
   async getOne(data: any) {
     const platforms = await this.managePlatform.find();
@@ -158,6 +177,18 @@ export class ServicesListService {
     const refillData = res.data;
     if (!refillData) throw new HttpException("service not found", 404);
     return refillData
+  }
+
+  async getSearch(query: { search: string }) {
+    if (query.search && query.search !== '') {
+      return await this.servicesListModel.find({
+        title: {
+          $regex: query.search,
+          $options: "i",
+        },
+      })
+    }
+    return {}
   }
 
 

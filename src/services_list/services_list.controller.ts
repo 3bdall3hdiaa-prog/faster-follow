@@ -10,6 +10,7 @@ import { CreateServicesListDto } from './dto/create-services_list.dto';
 export class ServicesListController {
   constructor(private readonly servicesListService: ServicesListService, private readonly cloudinaryService: CloudinaryService) { }
 
+
   @Post()
   @role(['admin'])
   @UseGuards(RoleGuard)
@@ -19,6 +20,11 @@ export class ServicesListController {
     if (file) getFile = await this.cloudinaryService.uploadFile(file);
     return this.servicesListService.create(createServicesListDto, getFile);
   }
+  @Get('/search')
+  getSearch(@Query() query: { search: string }) {
+    return this.servicesListService.getSearch(query)
+  }
+
 
   @Get()
   findAll() {
@@ -45,7 +51,7 @@ export class ServicesListController {
   }
 
   @Get('getdata')
-  async getdata(@Query() query: { key: string, apiEndpoint: string, page: number }) {
+  async getdata(@Query() query: { key: string, apiEndpoint: string, page: number, search: string }) {
     return this.servicesListService.getdata(query);
   }
   @Get('/getOne/:slug')
