@@ -33,7 +33,7 @@ export class ManageProvidersService {
 
         return {
           ...provider.toObject(),
-          balance: res.data.balance,
+          balance: Number(res.data.balance),
         };
       }),
     );
