@@ -1,5 +1,5 @@
 // src/auth/auth.service.ts
-import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
+import { HttpException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { firstValueFrom } from 'rxjs';
 import { OAuth2Client } from 'google-auth-library';
@@ -40,7 +40,7 @@ export class AuthService {
   async saveGoogleUser(googleUser: any): Promise<IUser> {
     const { googleId, email, name, picture, access_token, email_verified } = googleUser;
 
-    let user = await this.userModel.findOne({
+    let user: any = await this.userModel.findOne({
       $or: [
         { googleId: googleId },
         { email: email }
@@ -48,6 +48,12 @@ export class AuthService {
     });
 
     if (user) {
+      if (user.status == 'inactive') {
+        throw new HttpException("الحساب غير موجود", 404);
+      }
+      if (user.status == 'banned') {
+        throw new HttpException("الحساب محظور", 404);
+      }
       user.name = name;
       user.picture = picture;
       user.accessToken = access_token;

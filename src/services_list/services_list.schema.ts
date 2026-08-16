@@ -70,6 +70,10 @@ export class ServicesList {
         to: number;
         discount: number;
     }[];
+    @Prop()
+    guarantee?: string
+    @Prop()
+    perDay?: string
 
 }
 

@@ -89,12 +89,8 @@ export class NewOrderService {
   async checkOrderStatus(orderId: string) {
     try {
       // نجيب الطلب من قاعدة البيانات
-      const order: any = await this.newOrderModel.findOne({ _id: orderId }).populate('provider').populate('serviceId');
+      const order: any = await this.newOrderModel.findOne({ providerOrderId: orderId }).populate('provider').populate('serviceId');
       if (!order) throw new HttpException('الطلب غير موجود', 404);
-
-      // نجيب المزود من قاعدة البيانات
-      // const provider = await this.providerModel.findOne({ name: order.provider });
-      // if (!provider) throw new HttpException('المزود غير موجود', 404);
 
       // إعداد البيانات
       const payload = new URLSearchParams();
@@ -105,7 +101,6 @@ export class NewOrderService {
       // نطلب حالة الطلب من المزود
       const response = await axios.post(order.provider.apiEndpoint, payload);
 
-      // لو رجع المزود حالة
       if (response.data.status) {
         const newStatus = response.data.status.toLowerCase(); // Completed / Pending / In progress / Canceled
         await this.newOrderModel.findByIdAndUpdate(order._id, { status: newStatus });
