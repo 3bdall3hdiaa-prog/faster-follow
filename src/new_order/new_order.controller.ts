@@ -42,10 +42,10 @@ export class NewOrderController {
     return this.newOrderService.update(id, updateNewOrderDto);
   }
 
-  @Delete(':id')
-  @role(["admin"])
-  @UseGuards(RoleGuard)
-  remove(@Param('id') id: string) {
-    return this.newOrderService.remove(id);
-  }
+  // @Delete(':id')
+  // @role(["admin"])
+  // @UseGuards(RoleGuard)
+  // remove(@Param('id') id: string) {
+  //   return this.newOrderService.remove(id);
+  // }
 }

@@ -56,8 +56,6 @@ export class AuthService {
       }
       user.name = name;
       user.picture = picture;
-      user.accessToken = access_token;
-      user.emailVerified = email_verified;
       return user.save();
     } else {
       const newUser = new this.userModel({

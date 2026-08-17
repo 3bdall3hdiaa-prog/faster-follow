@@ -8,6 +8,8 @@ export type UserDocument = HydratedDocument<User>;
 
 @Schema({ timestamps: true }) // timestamps بتضيف createdAt و updatedAt تلقائي
 export class User {
+    @Prop({ unique: true, required: true })
+    id!: number
     @Prop()
     selectedCategory: string;
 

@@ -7,13 +7,14 @@ import { Model } from 'mongoose';
 import axios from 'axios';
 import { ManageProvidersDocument } from 'src/manage-providers/schema';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { CounterDocument } from './counter.schema';
 
-// import { NotificationDocument } from 'src/notification/motification.schema';
 @Injectable()
 export class NewOrderService {
   constructor(@InjectModel('NewOrder') private readonly newOrderModel: Model<UserDocument>,
     @InjectModel('ManageProviders') private readonly providerModel: Model<ManageProvidersDocument>,
-    @InjectModel('ServicesList') private readonly serviceModel: Model<any>
+    @InjectModel('ServicesList') private readonly serviceModel: Model<any>,
+    @InjectModel('Counter') private counterModel: Model<CounterDocument>,
   ) { }
   async create(createNewOrderDto: any) {
     try {
@@ -29,11 +30,25 @@ export class NewOrderService {
       if (disount) {
         totalCost = totalCost * ((100 - disount.discount) / 100)
       }
+      //starting order with 1000
+      const counter = await this.counterModel.findOneAndUpdate(
+        { name: 'order' },
+        { $inc: { seq: 1 } },
+        {
+          new: true,
+          upsert: true,
+          setDefaultsOnInsert: true,
+        },
+      );
+
+      const idNextOrder = counter.seq;
+
       // أولًا نحفظ الطلب في قاعدة البيانات بحالة مبدئية pending
       const newOrder = await this.newOrderModel.create({
         ...createNewOrderDto,
         totalCost,
         status: 'pending',
+        id: idNextOrder
       });
 
       const provider = await this.providerModel.findById(newOrder.provider);
@@ -46,7 +61,7 @@ export class NewOrderService {
 
       // إعداد بيانات الطلب للمزود JustAnotherPanel
       const payload = new URLSearchParams();
-      payload.append('key', apiKey); // ⚠️ استبدل بمفتاحك من الموقع
+      payload.append('key', apiKey);
       payload.append('action', 'add');
       payload.append('service', String(service.providerServiceId)); // رقم الخدمة من الموقع
       payload.append('link', createNewOrderDto.link);
@@ -147,11 +162,11 @@ export class NewOrderService {
 
   }
 
-  async remove(id: string) {
-    const user = await this.newOrderModel.findById(id)
-    if (!user) throw new HttpException("user not found", 404);
-    await this.newOrderModel.findOneAndDelete({ _id: id });
-  }
+  // async remove(id: string) {
+  //   const user = await this.newOrderModel.findById(id)
+  //   if (!user) throw new HttpException("user not found", 404);
+  //   await this.newOrderModel.findOneAndDelete({ _id: id });
+  // }
 
   onModuleInit() {
     console.log('🚀 NewOrderService initialized, Cron should start soon...');

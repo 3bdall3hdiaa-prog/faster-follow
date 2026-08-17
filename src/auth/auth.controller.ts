@@ -30,7 +30,7 @@ export class AuthController {
       const tokenResult = await this.authService.generateToken(dbUser);
 
       res.cookie('token', tokenResult.token, {
-        httpOnly: true, secure: true, sameSite: 'lax'
+        httpOnly: true, secure: false, sameSite: 'lax'
       });
       const frontendUrl = `${process.env.API_FRONT}/#/callback`;
       return res.redirect(frontendUrl);
@@ -52,7 +52,7 @@ export class AuthController {
   @Get('/logout')
   async logout(@Res() res: any) {
     res.clearCookie('token', {
-      httpOnly: true, secure: true, sameSite: 'lax'
+      httpOnly: true, secure: false, sameSite: 'lax'
     });
     return res.status(200).json({
       message: 'Logout successful',

@@ -21,7 +21,7 @@ export class AuthController {
     const result = await this.authService.verifyOtp(data);
     res.cookie('token', result.token, {
       httpOnly: true,
-      secure: true,
+      secure: false,
       sameSite: 'lax'
     })
     return res.status(result.status).json({
@@ -43,7 +43,7 @@ export class loginController {
 
     res.cookie('token', result.token, {
       httpOnly: true,
-      secure: true,
+      secure: false,
       sameSite: 'lax',
     });
     return res.status(result.status).json({
