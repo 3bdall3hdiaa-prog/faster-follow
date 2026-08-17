@@ -145,11 +145,11 @@ export class NewOrderService {
 
     const data = await this.newOrderModel
       .find({ id_user: id })
-      .populate('provider')
       .populate('serviceId')
+      .populate('provider')
       .sort({ createdAt: -1 }); // الأحدث أولًا
 
-
+    console.log(data);
 
     return data;
   }
@@ -179,7 +179,7 @@ export class NewOrderService {
       console.log('🔥 Cron running... checking for pending/processing orders');
 
       const pendingOrders: any = await this.newOrderModel.find({
-        status: { $in: ['pending', 'processing', 'in progress'] },
+        status: { $in: ['pending', 'processing', 'in progress', 'In progress', 'Processing', 'Pending'] },
       }).populate('provider');
 
       if (pendingOrders.length === 0) {
@@ -200,11 +200,31 @@ export class NewOrderService {
         payload.append('order', order.providerOrderId);
 
         const response = await axios.post(provider.apiEndpoint, payload);
-        console.log(response.data);
         if (response.data.status) {
           const newStatus = response.data.status.toLowerCase();
-          await this.newOrderModel.findByIdAndUpdate(order._id, { status: newStatus });
+
+          const updateData: any = {
+            status: newStatus,
+          };
+
+          // لو الطلب اتنفذ بشكل جزئي
+          if (newStatus === 'partial') {
+            updateData.startCount = Number(response.data.start_count);
+            updateData.remains = Number(response.data.remains);
+          }
+
+          await this.newOrderModel.findByIdAndUpdate(
+            order._id,
+            updateData,
+          );
+
           console.log(`✅ Order ${order._id} updated to ${newStatus}`);
+
+          if (newStatus === 'partial') {
+            console.log(
+              `📊 Partial order - Start: ${updateData.startCount}, Remains: ${updateData.remains}`,
+            );
+          }
         }
       }
 

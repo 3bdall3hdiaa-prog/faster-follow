@@ -4,6 +4,7 @@ import { IsUrl } from 'class-validator';
 import { HydratedDocument } from 'mongoose';
 import { ManageProviders } from '../manage-providers/schema';
 import { Types } from 'mongoose';
+import { ServicesList } from 'src/services_list/services_list.schema';
 export type UserDocument = HydratedDocument<User>;
 
 @Schema({ timestamps: true }) // timestamps بتضيف createdAt و updatedAt تلقائي
@@ -14,7 +15,7 @@ export class User {
     selectedCategory: string;
 
     @Prop({ required: true, type: Types.ObjectId, ref: 'ServicesList' })
-    serviceId: Types.ObjectId;
+    serviceId: ServicesList;
     @IsUrl()
     @Prop()
     link: string;
@@ -34,6 +35,10 @@ export class User {
     provider: ManageProviders;
     @Prop()
     providerOrderId: string
+    @Prop({ type: 'number' })
+    startCount: number;
+    @Prop({ type: 'number' })
+    remains: number;
 
 }
 
