@@ -55,8 +55,8 @@ export class ServicesListController {
     return this.servicesListService.getdata(query);
   }
   @Get('/getOne/:slug')
-  async getOne(@Param() data: any) {
-    return this.servicesListService.getOne(data)
+  async getOne(@Param() data: any, @Query() query: { platform: string }) {
+    return this.servicesListService.getOne(data, query.platform)
   }
   @Get('/:id')
   async getService(@Param('id') id: string) {

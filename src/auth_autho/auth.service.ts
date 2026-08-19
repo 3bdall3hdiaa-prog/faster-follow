@@ -27,10 +27,18 @@ export class AuthService {
     const code = Math.floor(100000 + Math.random() * 900000).toString();
 
     const sendCode = await this.mailerService.sendMail({
-      from: `متوفر برو.com <${process.env.EMAIL_USERNAME}>`,
+      from: `"متوفر برو" <${process.env.EMAIL_USERNAME}>`,
       to: createAuthDto.email,
       subject: "Code Verification",
-      text: `Your code is ${code}`,
+      text: `Your verification code is ${code}`,
+      html: `
+    <div>
+      <h2>متوفر برو</h2>
+      <p>Your verification code is:</p>
+      <h1>${code}</h1>
+      <p>This code will expire soon.</p>
+    </div>
+  `,
     });
     if (!sendCode) throw new HttpException("code not sent", 404);
     const user = await this.modell.create({

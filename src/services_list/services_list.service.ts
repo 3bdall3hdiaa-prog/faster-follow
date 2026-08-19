@@ -4,10 +4,12 @@ import mongoose, { Model } from 'mongoose';
 import { ServicesListDocument } from './services_list.schema';
 import axios from 'axios';
 import { ManagePlatformsDocument } from 'src/manageplatforms/schema';
+import { Counter, CounterDocument } from './counter.schema';
 @Injectable()
 export class ServicesListService {
   constructor(@InjectModel('ServicesList') private readonly servicesListModel: Model<ServicesListDocument>, @Inject('CLOUDINARY') private cloudinary: any,
     @InjectModel('ManagePlatforms') private readonly managePlatform: Model<ManagePlatformsDocument>,
+    @InjectModel(Counter.name) private counterModel: Model<CounterDocument>,
   ) { }
   async create(createServicesListDto: any, file: any) {
     if (!createServicesListDto) throw new HttpException('data is required', 404);
@@ -16,9 +18,21 @@ export class ServicesListService {
       if (!mongoose.Types.ObjectId.isValid(provider)) throw new HttpException('invalid provider', 404);
       const check = await this.servicesListModel.findOne({ provider, providerServiceId: createServicesListDto.providerServiceId });
       if (check) throw new HttpException('service already exist', 404);
+      //starting order with 1000
+      const counter = await this.counterModel.findOneAndUpdate(
+        { name: 'services' },
+        { $inc: { seq: 1 } },
+        {
+          new: true,
+          upsert: true,
+          setDefaultsOnInsert: true,
+        },
+      );
+
+      const idNextService = counter.seq;
       let addService;
-      if (file) addService = { ...createServicesListDto, image: { url: file.url, public_id: file.public_id } }
-      else addService = { ...createServicesListDto };
+      if (file) addService = { ...createServicesListDto, image: { url: file.url, public_id: file.public_id, id: idNextService } }
+      else addService = { ...createServicesListDto, id: idNextService };
       const discounts = JSON.parse(createServicesListDto.discounts);
       if (Array.isArray(discounts)) {
         addService.discounts = discounts.map((item: any) => ({
@@ -33,7 +47,19 @@ export class ServicesListService {
     }
 
     const addService = Promise.all(services.map(async (el: any) => {
+      const counter = await this.counterModel.findOneAndUpdate(
+        { name: 'services' },
+        { $inc: { seq: 1 } },
+        {
+          new: true,
+          upsert: true,
+          setDefaultsOnInsert: true,
+        },
+      );
+
+      const idNextService = counter.seq;
       await this.servicesListModel.create({
+        id: idNextService,
         provider,
         providerServiceId: el.service,
         title: el.name,
@@ -136,7 +162,8 @@ export class ServicesListService {
       length,
     };
   }
-  async getOne(data: any) {
+  async getOne(data: any, name: string) {
+    console.log(name)
     const platforms = await this.managePlatform.find();
     const platform = platforms.find((el: any) => el.slug === data.slug);
 
@@ -145,10 +172,17 @@ export class ServicesListService {
     }
 
     const filterServices = await this.servicesListModel.find({
-      platform: {
-        $regex: platform.name,
-        $options: "i",
-      },
+      $or: [
+        {
+          platform: {
+            $regex: platform.name,
+            $options: "i",
+          },
+        },
+        {
+          platform: name || platform.name
+        }
+      ]
     });
 
     return {

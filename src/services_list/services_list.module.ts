@@ -9,8 +9,12 @@ import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { CloudinaryProvider } from 'src/cloudinary/cloudinary.provider';
 import { ManageProvidersSchema } from 'src/manage-providers/schema';
 import { ManagePlatformsSchema } from 'src/manageplatforms/schema';
+import { Counter, CounterSchema } from './counter.schema';
 @Module({
-  imports: [JwtModule.register({ secret: process.env.secret }), MongooseModule.forFeature([{ name: 'ServicesList', schema: ServicesListSchema }]), MongooseModule.forFeature([{ name: 'ManageProviders', schema: ManageProvidersSchema }]),
+  imports: [JwtModule.register({ secret: process.env.secret }), MongooseModule.forFeature([{ name: 'ServicesList', schema: ServicesListSchema }]), MongooseModule.forFeature([{ name: 'ManageProviders', schema: ManageProvidersSchema }, {
+    name: Counter.name,
+    schema: CounterSchema
+  }]),
   MongooseModule.forFeature([{ name: 'ManagePlatforms', schema: ManagePlatformsSchema }])],
   controllers: [ServicesListController],
   providers: [ServicesListService, RoleGuard, CloudinaryService, CloudinaryProvider],

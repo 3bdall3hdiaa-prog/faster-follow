@@ -6,7 +6,8 @@ export type ServicesListDocument = HydratedDocument<ServicesList>;
 
 @Schema({ timestamps: true })
 export class ServicesList {
-
+    @Prop({ required: true, unique: true })
+    id!: number;
     @Prop({ required: true })
     providerServiceId!: number;
 
