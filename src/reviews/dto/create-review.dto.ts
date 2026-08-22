@@ -9,6 +9,9 @@ export class CreateReviewDto {
     @IsNotEmpty()
     userId!: string;
 
+    @IsOptional()
+    isPublished?: boolean;
+
     @IsString()
     @IsNotEmpty()
     @MinLength(3)

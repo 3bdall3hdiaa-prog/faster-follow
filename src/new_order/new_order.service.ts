@@ -149,7 +149,6 @@ export class NewOrderService {
       .populate('provider')
       .sort({ createdAt: -1 }); // الأحدث أولًا
 
-    console.log(data);
 
     return data;
   }

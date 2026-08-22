@@ -13,6 +13,7 @@ export class ManageProvidersController {
   @role(["admin"])
   @UseGuards(RoleGuard)
   create(@Body(new ValidationPipe()) createManageProviderDto: CreateManageProviderDto) {
+    console.log('aascascasc');
     return this.manageProvidersService.create(createManageProviderDto);
   }
 

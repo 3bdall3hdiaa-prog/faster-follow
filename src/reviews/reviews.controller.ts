@@ -1,7 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ValidationPipe } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
-import { UpdateReviewDto } from './dto/update-review.dto';
 import { role } from 'src/user/user.customdecoratoe';
 import { RoleGuard } from 'src/user/guard/guard';
 
@@ -12,7 +11,7 @@ export class ReviewsController {
   @Post()
   @role(['client'])
   @UseGuards(RoleGuard)
-  create(@Body() createReviewDto: CreateReviewDto) {
+  create(@Body(new ValidationPipe()) createReviewDto: CreateReviewDto) {
     return this.reviewsService.create(createReviewDto);
   }
 

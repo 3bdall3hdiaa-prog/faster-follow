@@ -36,7 +36,9 @@ import { ReviewsModule } from './reviews/reviews.module';
   })
     , MailerModule.forRoot({
       transport: {
-        service: 'gmail',
+        host: 'smtp.hostinger.com',
+        port: 465,
+        secure: true,
         auth: {
           user: process.env.EMAIL_USERNAME,
           pass: process.env.EMAIL_PASSWORD,

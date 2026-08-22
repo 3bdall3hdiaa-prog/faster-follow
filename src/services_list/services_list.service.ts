@@ -163,7 +163,6 @@ export class ServicesListService {
     };
   }
   async getOne(data: any, name: string) {
-    console.log(name)
     const platforms = await this.managePlatform.find();
     const platform = platforms.find((el: any) => el.slug === data.slug);
 
@@ -207,7 +206,6 @@ export class ServicesListService {
       action: 'refill',
       order: data.order
     });
-    if (res.data.status !== 'success') throw new HttpException(res.data.message, 404);
     const refillData = res.data;
     if (!refillData) throw new HttpException("service not found", 404);
     return refillData
@@ -225,7 +223,16 @@ export class ServicesListService {
     return {}
   }
 
-
+  async refillStatus(data: { refillId: string, key: string, apiEndpoint: string }) {
+    console.log("sacascasc")
+    const res = await axios.post(data.apiEndpoint, {
+      key: data.key,
+      action: 'refill_status',
+      refill: data.refillId
+    })
+    if (!res.data) throw new HttpException("refill not found", 404);
+    return res.data
+  }
 
 
 
