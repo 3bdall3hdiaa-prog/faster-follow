@@ -171,6 +171,7 @@ export class ServicesListService {
     }
 
     const filterServices = await this.servicesListModel.find({
+      status: true,
       $or: [
         {
           platform: {
