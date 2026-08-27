@@ -23,7 +23,9 @@ export class ServicesList {
     @Prop({ required: true })
     price!: number;
 
-    //السعر الحقيقي عند المزود 
+    @Prop({ required: true, type: Number })
+    customerPrice?: number
+
     @Prop({ required: true })
     providerRate!: number;
 
